@@ -73,3 +73,32 @@ export function withTeam<T>(action: ActionWithTeamFunction<T>) {
     return action(formData, team);
   };
 }
+
+/**
+ * Checks if the current user has a paid subscription (active or trialing).
+ * Throws an error if user is not authenticated or doesn't have a paid plan.
+ * Use this in API routes to protect paid features.
+ * Returns both user and team to avoid duplicate queries.
+ * 
+ * Optimized: Uses getTeamForUser which internally calls getUser if needed,
+ * but we pass user.id to avoid redundant getUser call.
+ */
+export async function requirePaidSubscription(): Promise<{ user: User; team: TeamDataWithMembers }> {
+  const user = await getUser();
+  if (!user) {
+    throw new Error('User is not authenticated');
+  }
+
+  // Pass user.id to avoid getTeamForUser calling getUser again
+  const team = await getTeamForUser(user.id);
+  if (!team) {
+    throw new Error('Team not found');
+  }
+
+  const hasPaidPlan = team.subscriptionStatus === 'active' || team.subscriptionStatus === 'trialing';
+  if (!hasPaidPlan) {
+    throw new Error('This feature requires a paid subscription');
+  }
+
+  return { user, team };
+}

@@ -1,20 +1,17 @@
 'use server';
 
 import { z } from 'zod';
-import { and, eq, sql } from 'drizzle-orm';
-import { db } from '@/lib/db/drizzle';
+import { client } from '@/lib/db/drizzle';
 import {
   User,
-  users,
-  teams,
-  teamMembers,
-  activityLogs,
+  Team,
+  TeamMember,
+  Invitation,
   type NewUser,
   type NewTeam,
   type NewTeamMember,
   type NewActivityLog,
   ActivityType,
-  invitations
 } from '@/lib/db/schema';
 import { comparePasswords, hashPassword, setSession } from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
@@ -35,13 +32,10 @@ async function logActivity(
   if (teamId === null || teamId === undefined) {
     return;
   }
-  const newActivity: NewActivityLog = {
-    teamId,
-    userId,
-    action: type,
-    ipAddress: ipAddress || ''
-  };
-  await db.insert(activityLogs).values(newActivity);
+  await client`
+    INSERT INTO activity_logs (team_id, user_id, action, ip_address, timestamp)
+    VALUES (${teamId}, ${userId}, ${type}, ${ipAddress || ''}, NOW())
+  `;
 }
 
 const signInSchema = z.object({
@@ -49,21 +43,57 @@ const signInSchema = z.object({
   password: z.string().min(8).max(100)
 });
 
+// Helper function to transform snake_case to camelCase
+function transformUser(row: any): User {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    passwordHash: row.password_hash,
+    role: row.role,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    deletedAt: row.deleted_at,
+  };
+}
+
+function transformTeam(row: any): Team {
+  return {
+    id: row.id,
+    name: row.name,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    stripeCustomerId: row.stripe_customer_id,
+    stripeSubscriptionId: row.stripe_subscription_id,
+    stripeProductId: row.stripe_product_id,
+    planName: row.plan_name,
+    subscriptionStatus: row.subscription_status,
+  };
+}
+
+function transformInvitation(row: any): Invitation {
+  return {
+    id: row.id,
+    teamId: row.team_id,
+    email: row.email,
+    role: row.role,
+    invitedBy: row.invited_by,
+    invitedAt: row.invited_at,
+    status: row.status,
+  };
+}
+
 export const signIn = validatedAction(signInSchema, async (data, formData) => {
   const { email, password } = data;
 
-  const userWithTeam = await db
-    .select({
-      user: users,
-      team: teams
-    })
-    .from(users)
-    .leftJoin(teamMembers, eq(users.id, teamMembers.userId))
-    .leftJoin(teams, eq(teamMembers.teamId, teams.id))
-    .where(eq(users.email, email))
-    .limit(1);
+  const users = await client<any[]>`
+    SELECT u.*
+    FROM users u
+    WHERE u.email = ${email} AND u.deleted_at IS NULL
+    LIMIT 1
+  `;
 
-  if (userWithTeam.length === 0) {
+  if (users.length === 0) {
     return {
       error: 'Invalid email or password. Please try again.',
       email,
@@ -71,7 +101,25 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     };
   }
 
-  const { user: foundUser, team: foundTeam } = userWithTeam[0];
+  const foundUser = transformUser(users[0]);
+
+  // Get team for user
+  const teamMembers = await client<Array<{ team_id: number }>>`
+    SELECT team_id
+    FROM team_members
+    WHERE user_id = ${foundUser.id}
+    LIMIT 1
+  `;
+
+  let foundTeam: Team | null = null;
+  if (teamMembers.length > 0) {
+    const teams = await client<any[]>`
+      SELECT * FROM teams
+      WHERE id = ${teamMembers[0].team_id}
+      LIMIT 1
+    `;
+    foundTeam = teams.length > 0 ? transformTeam(teams[0]) : null;
+  }
 
   const isPasswordValid = await comparePasswords(
     password,
@@ -88,7 +136,7 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
 
   await Promise.all([
     setSession(foundUser),
-    logActivity(foundTeam?.id, foundUser.id, ActivityType.SIGN_IN)
+    logActivity(foundTeam?.id || null, foundUser.id, ActivityType.SIGN_IN)
   ]);
 
   const redirectTo = formData.get('redirect') as string | null;
@@ -109,31 +157,50 @@ const signUpSchema = z.object({
 export const signUp = validatedAction(signUpSchema, async (data, formData) => {
   const { email, password, inviteId } = data;
 
-  const existingUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
+  // Check if user already exists (including deleted users)
+  const existingUsers = await client<any[]>`
+    SELECT * FROM users 
+    WHERE email = ${email} 
+    LIMIT 1
+  `;
 
-  if (existingUser.length > 0) {
-    return {
-      error: 'Failed to create user. Please try again.',
-      email,
-      password
-    };
+  if (existingUsers.length > 0) {
+    const existingUser = existingUsers[0];
+    // If user is deleted, they can sign up again
+    if (existingUser.deleted_at) {
+      // Allow sign up for deleted users
+    } else {
+      return {
+        error: 'This email is already registered. Please sign in instead.',
+        email,
+        password
+      };
+    }
   }
 
   const passwordHash = await hashPassword(password);
 
-  const newUser: NewUser = {
-    email,
-    passwordHash,
-    role: 'owner' // Default role, will be overridden if there's an invitation
-  };
+  let createdUsers;
+  try {
+    createdUsers = await client<any[]>`
+      INSERT INTO users (email, password_hash, role, created_at, updated_at)
+      VALUES (${email}, ${passwordHash}, ${'owner'}, NOW(), NOW())
+      RETURNING *
+    `;
+  } catch (error: any) {
+    // Handle unique constraint violation (email already exists)
+    if (error?.code === '23505' || error?.message?.includes('unique') || error?.message?.includes('duplicate')) {
+      return {
+        error: 'This email is already registered. Please sign in instead.',
+        email,
+        password
+      };
+    }
+    // Re-throw other errors
+    throw error;
+  }
 
-  const [createdUser] = await db.insert(users).values(newUser).returning();
-
-  if (!createdUser) {
+  if (createdUsers.length === 0) {
     return {
       error: 'Failed to create user. Please try again.',
       email,
@@ -141,52 +208,53 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
     };
   }
 
+  const createdUser = transformUser(createdUsers[0]);
+
   let teamId: number;
   let userRole: string;
-  let createdTeam: typeof teams.$inferSelect | null = null;
+  let createdTeam: Team | null = null;
 
   if (inviteId) {
     // Check if there's a valid invitation
-    const [invitation] = await db
-      .select()
-      .from(invitations)
-      .where(
-        and(
-          eq(invitations.id, parseInt(inviteId)),
-          eq(invitations.email, email),
-          eq(invitations.status, 'pending')
-        )
-      )
-      .limit(1);
+    const invitations = await client<any[]>`
+      SELECT * FROM invitations 
+      WHERE id = ${parseInt(inviteId)} 
+        AND email = ${email} 
+        AND status = ${'pending'} 
+      LIMIT 1
+    `;
 
-    if (invitation) {
+    if (invitations.length > 0) {
+      const invitation = transformInvitation(invitations[0]);
       teamId = invitation.teamId;
       userRole = invitation.role;
 
-      await db
-        .update(invitations)
-        .set({ status: 'accepted' })
-        .where(eq(invitations.id, invitation.id));
+      await client`
+        UPDATE invitations 
+        SET status = ${'accepted'} 
+        WHERE id = ${invitation.id}
+      `;
 
       await logActivity(teamId, createdUser.id, ActivityType.ACCEPT_INVITATION);
 
-      [createdTeam] = await db
-        .select()
-        .from(teams)
-        .where(eq(teams.id, teamId))
-        .limit(1);
+      const teams = await client<any[]>`
+        SELECT * FROM teams 
+        WHERE id = ${teamId} 
+        LIMIT 1
+      `;
+      createdTeam = teams.length > 0 ? transformTeam(teams[0]) : null;
     } else {
       return { error: 'Invalid or expired invitation.', email, password };
     }
   } else {
     // Create a new team if there's no invitation
-    const newTeam: NewTeam = {
-      name: `${email}'s Team`
-    };
+    const newTeams = await client<any[]>`
+      INSERT INTO teams (name, created_at, updated_at)
+      VALUES (${`${email}'s Team`}, NOW(), NOW())
+      RETURNING *
+    `;
 
-    [createdTeam] = await db.insert(teams).values(newTeam).returning();
-
-    if (!createdTeam) {
+    if (newTeams.length === 0) {
       return {
         error: 'Failed to create team. Please try again.',
         email,
@@ -194,20 +262,18 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
       };
     }
 
+    createdTeam = transformTeam(newTeams[0]);
     teamId = createdTeam.id;
     userRole = 'owner';
 
     await logActivity(teamId, createdUser.id, ActivityType.CREATE_TEAM);
   }
 
-  const newTeamMember: NewTeamMember = {
-    userId: createdUser.id,
-    teamId: teamId,
-    role: userRole
-  };
-
   await Promise.all([
-    db.insert(teamMembers).values(newTeamMember),
+    client`
+      INSERT INTO team_members (user_id, team_id, role, joined_at)
+      VALUES (${createdUser.id}, ${teamId}, ${userRole}, NOW())
+    `,
     logActivity(teamId, createdUser.id, ActivityType.SIGN_UP),
     setSession(createdUser)
   ]);
@@ -224,7 +290,7 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
 export async function signOut() {
   const user = (await getUser()) as User;
   const userWithTeam = await getUserWithTeam(user.id);
-  await logActivity(userWithTeam?.teamId, user.id, ActivityType.SIGN_OUT);
+  await logActivity(userWithTeam?.teamId || null, user.id, ActivityType.SIGN_OUT);
   (await cookies()).delete('session');
 }
 
@@ -275,11 +341,12 @@ export const updatePassword = validatedActionWithUser(
     const userWithTeam = await getUserWithTeam(user.id);
 
     await Promise.all([
-      db
-        .update(users)
-        .set({ passwordHash: newPasswordHash })
-        .where(eq(users.id, user.id)),
-      logActivity(userWithTeam?.teamId, user.id, ActivityType.UPDATE_PASSWORD)
+      client`
+        UPDATE users 
+        SET password_hash = ${newPasswordHash} 
+        WHERE id = ${user.id}
+      `,
+      logActivity(userWithTeam?.teamId || null, user.id, ActivityType.UPDATE_PASSWORD)
     ]);
 
     return {
@@ -308,29 +375,26 @@ export const deleteAccount = validatedActionWithUser(
     const userWithTeam = await getUserWithTeam(user.id);
 
     await logActivity(
-      userWithTeam?.teamId,
+      userWithTeam?.teamId || null,
       user.id,
       ActivityType.DELETE_ACCOUNT
     );
 
     // Soft delete
-    await db
-      .update(users)
-      .set({
-        deletedAt: sql`CURRENT_TIMESTAMP`,
-        email: sql`CONCAT(email, '-', id, '-deleted')` // Ensure email uniqueness
-      })
-      .where(eq(users.id, user.id));
+    await client`
+      UPDATE users 
+      SET 
+        deleted_at = NOW(),
+        email = CONCAT(email, '-', id::text, '-deleted'),
+        updated_at = NOW()
+      WHERE id = ${user.id}
+    `;
 
     if (userWithTeam?.teamId) {
-      await db
-        .delete(teamMembers)
-        .where(
-          and(
-            eq(teamMembers.userId, user.id),
-            eq(teamMembers.teamId, userWithTeam.teamId)
-          )
-        );
+      await client`
+        DELETE FROM team_members 
+        WHERE user_id = ${user.id} AND team_id = ${userWithTeam.teamId}
+      `;
     }
 
     (await cookies()).delete('session');
@@ -350,8 +414,12 @@ export const updateAccount = validatedActionWithUser(
     const userWithTeam = await getUserWithTeam(user.id);
 
     await Promise.all([
-      db.update(users).set({ name, email }).where(eq(users.id, user.id)),
-      logActivity(userWithTeam?.teamId, user.id, ActivityType.UPDATE_ACCOUNT)
+      client`
+        UPDATE users 
+        SET name = ${name}, email = ${email}, updated_at = NOW() 
+        WHERE id = ${user.id}
+      `,
+      logActivity(userWithTeam?.teamId || null, user.id, ActivityType.UPDATE_ACCOUNT)
     ]);
 
     return { name, success: 'Account updated successfully.' };
@@ -372,14 +440,10 @@ export const removeTeamMember = validatedActionWithUser(
       return { error: 'User is not part of a team' };
     }
 
-    await db
-      .delete(teamMembers)
-      .where(
-        and(
-          eq(teamMembers.id, memberId),
-          eq(teamMembers.teamId, userWithTeam.teamId)
-        )
-      );
+    await client`
+      DELETE FROM team_members 
+      WHERE id = ${memberId} AND team_id = ${userWithTeam.teamId}
+    `;
 
     await logActivity(
       userWithTeam.teamId,
@@ -406,44 +470,36 @@ export const inviteTeamMember = validatedActionWithUser(
       return { error: 'User is not part of a team' };
     }
 
-    const existingMember = await db
-      .select()
-      .from(users)
-      .leftJoin(teamMembers, eq(users.id, teamMembers.userId))
-      .where(
-        and(eq(users.email, email), eq(teamMembers.teamId, userWithTeam.teamId))
-      )
-      .limit(1);
+    const existingMembers = await client<TeamMember[]>`
+      SELECT tm.*
+      FROM team_members tm
+      JOIN users u ON tm.user_id = u.id
+      WHERE u.email = ${email} AND tm.team_id = ${userWithTeam.teamId}
+      LIMIT 1
+    `;
 
-    if (existingMember.length > 0) {
+    if (existingMembers.length > 0) {
       return { error: 'User is already a member of this team' };
     }
 
     // Check if there's an existing invitation
-    const existingInvitation = await db
-      .select()
-      .from(invitations)
-      .where(
-        and(
-          eq(invitations.email, email),
-          eq(invitations.teamId, userWithTeam.teamId),
-          eq(invitations.status, 'pending')
-        )
-      )
-      .limit(1);
+    const existingInvitations = await client<any[]>`
+      SELECT * FROM invitations 
+      WHERE email = ${email} 
+        AND team_id = ${userWithTeam.teamId} 
+        AND status = ${'pending'} 
+      LIMIT 1
+    `;
 
-    if (existingInvitation.length > 0) {
+    if (existingInvitations.length > 0) {
       return { error: 'An invitation has already been sent to this email' };
     }
 
     // Create a new invitation
-    await db.insert(invitations).values({
-      teamId: userWithTeam.teamId,
-      email,
-      role,
-      invitedBy: user.id,
-      status: 'pending'
-    });
+    await client`
+      INSERT INTO invitations (team_id, email, role, invited_by, invited_at, status)
+      VALUES (${userWithTeam.teamId}, ${email}, ${role}, ${user.id}, NOW(), ${'pending'})
+    `;
 
     await logActivity(
       userWithTeam.teamId,

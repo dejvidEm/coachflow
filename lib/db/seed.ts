@@ -1,6 +1,6 @@
 import { stripe } from '../payments/stripe';
-import { db } from './drizzle';
-import { users, teams, teamMembers } from './schema';
+import { client } from './drizzle';
+import { User, Team, TeamMember } from './schema';
 import { hashPassword } from '@/lib/auth/session';
 
 async function createStripeProducts() {
@@ -44,31 +44,35 @@ async function seed() {
   const password = 'admin123';
   const passwordHash = await hashPassword(password);
 
-  const [user] = await db
-    .insert(users)
-    .values([
-      {
-        email: email,
-        passwordHash: passwordHash,
-        role: "owner",
-      },
-    ])
-    .returning();
+  const users = await client<any[]>`
+    INSERT INTO users (email, password_hash, role, created_at, updated_at)
+    VALUES (${email}, ${passwordHash}, ${'owner'}, NOW(), NOW())
+    RETURNING *
+  `;
 
+  if (users.length === 0) {
+    throw new Error('Failed to create user');
+  }
+
+  const user = users[0];
   console.log('Initial user created.');
 
-  const [team] = await db
-    .insert(teams)
-    .values({
-      name: 'Test Team',
-    })
-    .returning();
+  const teams = await client<any[]>`
+    INSERT INTO teams (name, created_at, updated_at)
+    VALUES (${'Test Team'}, NOW(), NOW())
+    RETURNING *
+  `;
 
-  await db.insert(teamMembers).values({
-    teamId: team.id,
-    userId: user.id,
-    role: 'owner',
-  });
+  if (teams.length === 0) {
+    throw new Error('Failed to create team');
+  }
+
+  const team = teams[0];
+
+  await client`
+    INSERT INTO team_members (user_id, team_id, role, joined_at)
+    VALUES (${user.id}, ${team.id}, ${'owner'}, NOW())
+  `;
 
   await createStripeProducts();
 }

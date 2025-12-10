@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { signToken, verifyToken } from '@/lib/auth/session';
+import { addSecurityHeaders } from '@/lib/security/headers';
 
 const protectedRoutes = '/dashboard';
 
@@ -9,8 +10,18 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get('session');
   const isProtectedRoute = pathname.startsWith(protectedRoutes);
 
+  // Enforce HTTPS in production
+  if (process.env.NODE_ENV === 'production') {
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    if (protocol !== 'https' && !request.url.includes('localhost')) {
+      const httpsUrl = request.url.replace('http://', 'https://');
+      return NextResponse.redirect(httpsUrl);
+    }
+  }
+
   if (isProtectedRoute && !sessionCookie) {
-    return NextResponse.redirect(new URL('/sign-in', request.url));
+    const response = NextResponse.redirect(new URL('/sign-in', request.url));
+    return addSecurityHeaders(response);
   }
 
   let res = NextResponse.next();
@@ -27,7 +38,7 @@ export async function middleware(request: NextRequest) {
           expires: expiresInOneDay.toISOString()
         }),
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production', // Only secure in production
         sameSite: 'lax',
         expires: expiresInOneDay
       });
@@ -35,12 +46,13 @@ export async function middleware(request: NextRequest) {
       console.error('Error updating session:', error);
       res.cookies.delete('session');
       if (isProtectedRoute) {
-        return NextResponse.redirect(new URL('/sign-in', request.url));
+        const response = NextResponse.redirect(new URL('/sign-in', request.url));
+        return addSecurityHeaders(response);
       }
     }
   }
 
-  return res;
+  return addSecurityHeaders(res);
 }
 
 export const config = {

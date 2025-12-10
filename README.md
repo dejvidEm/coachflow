@@ -19,8 +19,7 @@ This is a starter template for building a SaaS application using **Next.js** wit
 ## Tech Stack
 
 - **Framework**: [Next.js](https://nextjs.org/)
-- **Database**: [Postgres](https://www.postgresql.org/)
-- **ORM**: [Drizzle](https://orm.drizzle.team/)
+- **Database**: [Postgres](https://www.postgresql.org/) with raw SQL queries
 - **Payments**: [Stripe](https://stripe.com/)
 - **UI Library**: [shadcn/ui](https://ui.shadcn.com/)
 
@@ -46,12 +45,13 @@ Use the included setup script to create your `.env` file:
 pnpm db:setup
 ```
 
-Run the database migrations and seed the database with a default user and team:
+Seed the database with a default user and team:
 
 ```bash
-pnpm db:migrate
 pnpm db:seed
 ```
+
+Note: Make sure your database tables are already created. You can use the existing migrations in `lib/db/migrations/` as a reference for your database schema.
 
 This will create the following user and team:
 
