@@ -69,7 +69,7 @@ export async function POST(
       logoUrl: user.pdfLogoUrl,
       logoPosition: user.pdfLogoPosition,
       accentColor: user.pdfAccentColor,
-    });
+    }) as React.ReactElement;
 
     // Generate PDF as Blob
     const blob = await pdf(pdfDoc).toBlob();
