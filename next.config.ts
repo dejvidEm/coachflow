@@ -1,11 +1,13 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  experimental: {
-    ppr: true,
-    clientSegmentCache: true,
-    nodeMiddleware: true
-  },
+  // Experimental features removed for security update (CVE-2025-66478)
+  // These features require canary versions which are vulnerable
+  // experimental: {
+  //   ppr: true,
+  //   clientSegmentCache: true,
+  //   nodeMiddleware: true
+  // },
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
