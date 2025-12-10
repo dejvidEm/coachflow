@@ -29,17 +29,17 @@ export function withSecurity<T = any>(
   handler: (request: NextRequest) => Promise<NextResponse<T>>,
   options: ApiWrapperOptions = {}
 ): (request: NextRequest) => Promise<NextResponse<T>> {
-  return async (request: NextRequest) => {
+  return async (request: NextRequest): Promise<NextResponse<T>> => {
     // Handle CORS
     const corsResponse = cors(request, options.cors);
     if (corsResponse) {
-      return addSecurityHeaders(corsResponse);
+      return addSecurityHeaders(corsResponse) as NextResponse<T>;
     }
 
     // Handle rate limiting
     const rateLimitResponse = rateLimit(request, options.rateLimit);
     if (rateLimitResponse) {
-      return addSecurityHeaders(rateLimitResponse);
+      return addSecurityHeaders(rateLimitResponse) as NextResponse<T>;
     }
 
     // Execute handler

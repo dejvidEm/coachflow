@@ -64,12 +64,12 @@ export function EditPdfSettingsModal({ isOpen, onClose }: EditPdfSettingsModalPr
 
     try {
       // Upload via API route (secure - service role key stays on server)
-      const formData = new FormData();
-      formData.append('file', file);
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
 
       const response = await fetch('/api/user/logo', {
         method: 'POST',
-        body: formData,
+        body: uploadFormData,
       });
 
       if (!response.ok) {
@@ -78,7 +78,7 @@ export function EditPdfSettingsModal({ isOpen, onClose }: EditPdfSettingsModalPr
       }
 
       const data = await response.json();
-      setFormData({ ...formData, logoUrl: data.logoUrl });
+      setFormData((prev) => ({ ...prev, logoUrl: data.logoUrl }));
       setLogoPreview(data.logoUrl);
     } catch (err: any) {
       setError(err.message || 'Failed to upload logo');
