@@ -121,19 +121,21 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
           const Icon = item.icon;
 
           return (
-            <Link key={item.href} href={item.href} passHref>
-              <Button
-                variant={isActive ? 'secondary' : 'ghost'}
-                className={`shadow-none my-1 w-full ${
-                  isCollapsed ? 'justify-center px-0' : 'justify-start'
-                } ${isActive ? 'bg-gray-100' : ''}`}
-                onClick={onMobileToggle}
-                title={isCollapsed ? item.label : undefined}
-              >
+            <Button
+              key={item.href}
+              variant={isActive ? 'secondary' : 'ghost'}
+              className={`shadow-none my-1 w-full ${
+                isCollapsed ? 'justify-center px-0' : 'justify-start'
+              } ${isActive ? 'bg-gray-100' : ''}`}
+              onClick={onMobileToggle}
+              title={isCollapsed ? item.label : undefined}
+              asChild
+            >
+              <Link href={item.href}>
                 <Icon className={`h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
                 {!isCollapsed && <span>{item.label}</span>}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           );
         })}
 

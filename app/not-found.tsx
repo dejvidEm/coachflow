@@ -16,13 +16,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="max-w-48 mx-auto flex justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
-          onFocus={(e) => {
-            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(68, 176, 128, 0.1)';
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.boxShadow = '';
-          }}
+          className="max-w-48 mx-auto flex justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#44B080]/30"
         >
           Back to Home
         </Link>
