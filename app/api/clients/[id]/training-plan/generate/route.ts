@@ -69,9 +69,10 @@ export async function POST(
       logoUrl: user.pdfLogoUrl,
       logoPosition: user.pdfLogoPosition,
       accentColor: user.pdfAccentColor,
-    }) as React.ReactElement;
+    });
 
     // Generate PDF as Blob
+    // @ts-expect-error - React.createElement returns FunctionComponentElement but pdf() expects ReactElement with DocumentProps
     const blob = await pdf(pdfDoc).toBlob();
     
     // Convert blob to buffer for upload

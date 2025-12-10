@@ -82,11 +82,11 @@ export function rateLimit(
 /**
  * Wrapper function to add rate limit headers to response
  */
-export function addRateLimitHeaders(
-  response: NextResponse,
+export function addRateLimitHeaders<T = unknown>(
+  response: NextResponse<T>,
   request: NextRequest,
   options: RateLimitOptions = {}
-): NextResponse {
+): NextResponse<T> {
   const opts = { ...defaultOptions, ...options };
   const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
   const key = `rate-limit:${ip}`;

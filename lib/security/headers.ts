@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 /**
  * Add security headers to response
  */
-export function addSecurityHeaders(response: NextResponse): NextResponse {
+export function addSecurityHeaders<T = unknown>(response: NextResponse<T>): NextResponse<T> {
   // Prevent clickjacking
   response.headers.set('X-Frame-Options', 'DENY');
   
@@ -55,14 +55,14 @@ export function addSecurityHeaders(response: NextResponse): NextResponse {
 /**
  * Add cache headers to response
  */
-export function addCacheHeaders(
-  response: NextResponse,
+export function addCacheHeaders<T = unknown>(
+  response: NextResponse<T>,
   options: {
     maxAge?: number;
     staleWhileRevalidate?: number;
     public?: boolean;
   } = {}
-): NextResponse {
+): NextResponse<T> {
   const {
     maxAge = 0,
     staleWhileRevalidate = 0,

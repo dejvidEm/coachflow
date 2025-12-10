@@ -75,6 +75,8 @@ export async function POST(request: NextRequest) {
       actualWeight: validatedData.actualWeight || null,
       actualHeight: validatedData.actualHeight || null,
       fitnessGoal: validatedData.fitnessGoal,
+      mealPdf: null,
+      trainingPdf: null,
     });
 
     return NextResponse.json({ client, message: 'Client created successfully' }, { status: 201 });
