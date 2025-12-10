@@ -47,10 +47,11 @@ export function withSecurity<T = any>(
     try {
       response = await handler(request);
     } catch (error: any) {
+      // Type assertion needed because error response type doesn't match T
       response = NextResponse.json(
         { error: error.message || 'Internal server error' },
         { status: 500 }
-      );
+      ) as unknown as NextResponse<T>;
     }
 
     // Add security headers

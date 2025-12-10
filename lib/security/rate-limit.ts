@@ -41,7 +41,7 @@ export function rateLimit(
   options: RateLimitOptions = {}
 ): NextResponse | null {
   const opts = { ...defaultOptions, ...options };
-  const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   const key = `rate-limit:${ip}`;
   const now = Date.now();
 
@@ -88,7 +88,7 @@ export function addRateLimitHeaders<T = unknown>(
   options: RateLimitOptions = {}
 ): NextResponse<T> {
   const opts = { ...defaultOptions, ...options };
-  const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   const key = `rate-limit:${ip}`;
   const entry = store[key];
 
