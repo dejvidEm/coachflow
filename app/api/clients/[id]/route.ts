@@ -32,9 +32,11 @@ export async function GET(
       );
     }
 
-    // Include the PDF URLs in the response
+    // Don't expose PDF URLs - only return flags for security
+    // All PDF access should go through authenticated proxy routes
+    const { mealPdf, trainingPdf, ...clientWithoutPdfs } = client;
     const clientResponse = {
-      ...client,
+      ...clientWithoutPdfs,
       hasMealPdf: !!client.mealPdf,
       hasTrainingPdf: !!client.trainingPdf,
     };

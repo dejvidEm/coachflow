@@ -28,7 +28,18 @@ export async function GET(request: NextRequest) {
     const { user } = await requirePaidSubscription();
     const clients = await getClientsForUser(user.id);
     
-    const response = NextResponse.json({ clients });
+    // Don't expose PDF URLs - only return flags for security
+    // All PDF access should go through authenticated proxy routes
+    const clientsWithoutPdfs = clients.map(client => {
+      const { mealPdf, trainingPdf, ...clientWithoutPdfs } = client;
+      return {
+        ...clientWithoutPdfs,
+        hasMealPdf: !!client.mealPdf,
+        hasTrainingPdf: !!client.trainingPdf,
+      };
+    });
+    
+    const response = NextResponse.json({ clients: clientsWithoutPdfs });
     // Allow SWR to cache, but revalidate on next request
     response.headers.set('Cache-Control', 'private, max-age=0, must-revalidate');
     return response;

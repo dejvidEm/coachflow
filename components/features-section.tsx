@@ -10,7 +10,7 @@ export function FeaturesSection() {
     {
       icon: Users,
       titleKey: "clientManagement" as const,
-      gradient: "from-blue-500 to-cyan-500",
+      gradient: "from-emerald-500 to-teal-500",
     },
     {
       icon: Dumbbell,
@@ -20,22 +20,22 @@ export function FeaturesSection() {
     {
       icon: UtensilsCrossed,
       titleKey: "mealPlanning" as const,
-      gradient: "from-[#44B080] to-[#3a9a6d]",
+      gradient: "from-emerald-500 to-teal-500",
     },
     {
       icon: FileText,
       titleKey: "pdfExports" as const,
-      gradient: "from-pink-500 to-rose-500",
+      gradient: "from-emerald-500 to-teal-500",
     },
     {
       icon: Calendar,
       titleKey: "scheduling" as const,
-      gradient: "from-violet-500 to-purple-500",
+      gradient: "from-emerald-500 to-teal-500",
     },
     {
       icon: BarChart3,
       titleKey: "analytics" as const,
-      gradient: "from-indigo-500 to-blue-500",
+      gradient: "from-emerald-500 to-teal-500",
     },
   ]
 

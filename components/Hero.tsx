@@ -54,15 +54,13 @@ export function HeroSection() {
 
           {/* Social proof */}
           <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-500">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-200 to-neutral-300 border-2 border-white"
-                  style={{
-                    backgroundImage: `url(/placeholder.svg?height=32&width=32&query=fitness trainer portrait ${i})`,
-                    backgroundSize: "cover",
-                  }}
+            <div className="flex -space-x-3">
+              {['05', '07', '10', '11', '13'].map((imgNum) => (
+                <img
+                  key={imgNum}
+                  src={`/imgs/${imgNum}.png`}
+                  alt={`Trainer ${imgNum}`}
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-white object-cover"
                 />
               ))}
             </div>

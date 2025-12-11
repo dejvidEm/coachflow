@@ -137,6 +137,12 @@ function Header() {
             >
               Pricing
             </button>
+            <Link
+              href="/changelog"
+              className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+            >
+              Changelog
+            </Link>
           </nav>
         )}
         <div className="flex items-center space-x-4">

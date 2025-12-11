@@ -278,11 +278,11 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#44B080'}
                   >
                     <FileText className="h-4 w-4 mr-2" />
-                    {client.mealPdf ? 'Regenerate Meal Plan' : 'Generate Meal Plan'}
+                    {client.hasMealPdf ? 'Regenerate Meal Plan' : 'Generate Meal Plan'}
                   </Button>
                 </div>
 
-                {client.hasMealPdf || client.mealPdf ? (
+                {client.hasMealPdf ? (
                   <>
                     <div className="border border-gray-200 rounded-lg overflow-hidden">
                       {/* Collapsible Header */}
@@ -318,8 +318,9 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                if (client.mealPdf) {
-                                  window.open(client.mealPdf, '_blank');
+                                if (client.hasMealPdf) {
+                                  // Use authenticated download route instead of direct URL
+                                  window.open(`/api/clients/${clientId}/meal-plan/download`, '_blank');
                                 }
                               }}
                             >
@@ -331,13 +332,11 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                               size="sm"
                               onClick={async (e) => {
                                 e.stopPropagation();
-                                if (client.mealPdf) {
-                                  const pdfUrl = typeof client.mealPdf === 'string' 
-                                    ? client.mealPdf 
-                                    : String(client.mealPdf);
-                                  
+                                if (client.hasMealPdf) {
+                                  // Use authenticated proxy route URL instead of direct URL
+                                  const proxyUrl = `${window.location.origin}/api/clients/${clientId}/meal-plan/view`;
                                   try {
-                                    await navigator.clipboard.writeText(pdfUrl);
+                                    await navigator.clipboard.writeText(proxyUrl);
                                     setCopied(true);
                                     setTimeout(() => setCopied(false), 2000);
                                   } catch (err) {
@@ -371,7 +370,7 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                       {showMealPdfPreview && (
                         <div className="p-4">
                           <PdfViewer
-                            pdfUrl={client.mealPdf || ''}
+                            pdfUrl=""
                             title="Meal Plan PDF Preview"
                             proxyUrl={`/api/clients/${clientId}/meal-plan/view`}
                           />
@@ -406,11 +405,11 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#44B080'}
                   >
                     <FileText className="h-4 w-4 mr-2" />
-                    {client.trainingPdf ? 'Regenerate Training Plan' : 'Generate Training Plan'}
+                    {client.hasTrainingPdf ? 'Regenerate Training Plan' : 'Generate Training Plan'}
                   </Button>
                 </div>
 
-                {client.hasTrainingPdf || client.trainingPdf ? (
+                {client.hasTrainingPdf ? (
                   <>
                     <div className="border border-gray-200 rounded-lg overflow-hidden">
                       {/* Collapsible Header */}
@@ -446,8 +445,9 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                if (client.trainingPdf) {
-                                  window.open(client.trainingPdf, '_blank');
+                                if (client.hasTrainingPdf) {
+                                  // Use authenticated download route instead of direct URL
+                                  window.open(`/api/clients/${clientId}/training-plan/download`, '_blank');
                                 }
                               }}
                             >
@@ -459,13 +459,11 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                               size="sm"
                               onClick={async (e) => {
                                 e.stopPropagation();
-                                if (client.trainingPdf) {
-                                  const pdfUrl = typeof client.trainingPdf === 'string' 
-                                    ? client.trainingPdf 
-                                    : String(client.trainingPdf);
-                                  
+                                if (client.hasTrainingPdf) {
+                                  // Use authenticated proxy route URL instead of direct URL
+                                  const proxyUrl = `${window.location.origin}/api/clients/${clientId}/training-plan/view`;
                                   try {
-                                    await navigator.clipboard.writeText(pdfUrl);
+                                    await navigator.clipboard.writeText(proxyUrl);
                                     setCopiedTraining(true);
                                     setTimeout(() => setCopiedTraining(false), 2000);
                                   } catch (err) {
@@ -499,7 +497,7 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                       {showTrainingPdfPreview && (
                         <div className="p-4">
                           <PdfViewer
-                            pdfUrl={client.trainingPdf || ''}
+                            pdfUrl=""
                             title="Training Plan PDF Preview"
                             proxyUrl={`/api/clients/${clientId}/training-plan/view`}
                           />

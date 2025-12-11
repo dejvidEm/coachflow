@@ -41,6 +41,8 @@ export function PdfViewer({ pdfUrl, title, proxyUrl }: PdfViewerProps) {
   };
 
   if (hasError) {
+              // Use proxy URL if available, otherwise fallback to pdfUrl
+              const fallbackUrl = proxyUrl || pdfUrl;
               return (
                 <div className="flex flex-col items-center justify-center h-[600px] bg-gray-50 border border-gray-200 rounded-lg">
                   <AlertCircle className="h-12 w-12 text-red-500 mb-4" />
@@ -53,28 +55,32 @@ export function PdfViewer({ pdfUrl, title, proxyUrl }: PdfViewerProps) {
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Refresh
                     </Button>
-                    <Button
-                      onClick={() => window.open(pdfUrl, '_blank')}
-                      style={{ backgroundColor: '#44B080' }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3a9a6d'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#44B080'}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Open PDF in New Tab
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.href = pdfUrl;
-                        link.download = title.replace(' Preview', '.pdf');
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                      }}
-                    >
-                      Download PDF
-                    </Button>
+                    {fallbackUrl && (
+                      <>
+                        <Button
+                          onClick={() => window.open(fallbackUrl, '_blank')}
+                          style={{ backgroundColor: '#44B080' }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3a9a6d'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#44B080'}
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Open PDF in New Tab
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = fallbackUrl;
+                            link.download = title.replace(' Preview', '.pdf');
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }}
+                        >
+                          Download PDF
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               );
@@ -126,15 +132,17 @@ export function PdfViewer({ pdfUrl, title, proxyUrl }: PdfViewerProps) {
                       <RefreshCw className="h-3 w-3 mr-1" />
                       Refresh
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.open(pdfUrl, '_blank')}
-                      className="bg-white shadow-md hover:bg-gray-50"
-                    >
-                      <ExternalLink className="h-3 w-3 mr-1" />
-                      Open in New Tab
-                    </Button>
+                    {(proxyUrl || pdfUrl) && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(proxyUrl || pdfUrl, '_blank')}
+                        className="bg-white shadow-md hover:bg-gray-50"
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        Open in New Tab
+                      </Button>
+                    )}
                   </div>
     </div>
   );
