@@ -18,7 +18,7 @@ export default function HomePage() {
   // Then check sessionStorage after component mounts (client-side only)
   const [isPreloaderVisible, setIsPreloaderVisible] = useState(true);
   const [isSliding, setIsSliding] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
+  const [shouldShowContent, setShouldShowContent] = useState(false);
 
   // Check sessionStorage after component mounts (client-side only)
   useEffect(() => {
@@ -26,8 +26,8 @@ export default function HomePage() {
     const hasSeenPreloader = sessionStorage.getItem(PRELOADER_SEEN_KEY);
     if (hasSeenPreloader) {
       setIsPreloaderVisible(false);
+      setShouldShowContent(true);
     }
-    setIsChecking(false);
   }, []);
 
   const handlePreloaderComplete = () => {
@@ -40,6 +40,8 @@ export default function HomePage() {
 
   const handlePreloaderSliding = () => {
     setIsSliding(true);
+    // Show content when preloader starts sliding
+    setShouldShowContent(true);
   };
 
   return (
@@ -47,9 +49,9 @@ export default function HomePage() {
       <main 
         className="relative"
         style={{
-          opacity: isPreloaderVisible ? 0 : 1,
-          visibility: isPreloaderVisible ? 'hidden' : 'visible',
-          transition: 'opacity 0.3s ease-in-out',
+          opacity: shouldShowContent ? 1 : 0,
+          pointerEvents: shouldShowContent ? 'auto' : 'none',
+          transition: 'opacity 0.5s ease-in-out',
         }}
       >
         <div id="home">
