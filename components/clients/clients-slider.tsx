@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { Client } from '@/lib/db/schema';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronLeft, ChevronRight, UserCircle } from 'lucide-react';
+import { UserCircle } from 'lucide-react';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { ClientsTable } from './clients-table';
@@ -65,10 +65,10 @@ function ClientCard({ client }: { client: Client }) {
 
   return (
     <Card 
-      className="min-w-[300px] max-w-[300px] h-[380px] cursor-pointer hover:shadow-lg transition-shadow flex flex-col"
+      className="w-full h-[340px] cursor-pointer hover:shadow-lg transition-shadow flex flex-col"
       onClick={handleCardClick}
     >
-      <CardContent className="p-5 flex flex-col h-full">
+      <CardContent className="p-4 flex flex-col h-full">
         <div className="flex items-start gap-3 mb-3 flex-shrink-0">
           <div className="flex-shrink-0">
             <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: genderColors.bg }}>
@@ -135,7 +135,7 @@ function ClientCard({ client }: { client: Client }) {
         )}
 
         {client.note && (
-          <div className="mt-auto pt-3 border-t border-gray-200 flex-shrink-0 min-h-[3rem]">
+          <div className="mt-auto pt-2 border-t border-gray-200 flex-shrink-0">
             <p className="text-xs text-gray-600 italic line-clamp-2">{client.note}</p>
           </div>
         )}
@@ -144,7 +144,7 @@ function ClientCard({ client }: { client: Client }) {
           <div className="mt-auto"></div>
         )}
 
-        <div className="pt-2 text-xs text-gray-500 text-center flex-shrink-0">
+        <div className="pt-1 text-xs text-center flex-shrink-0" style={{ color: '#44B080' }}>
           Click to view details →
         </div>
       </CardContent>
@@ -170,20 +170,6 @@ export function ClientsSlider({ view, clients: providedClients }: ClientsSliderP
     }
   );
   const clients = providedClients || data?.clients || [];
-  const scrollContainer = useRef<HTMLDivElement>(null);
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (!scrollContainer.current) return;
-    
-    const container = scrollContainer.current;
-    const scrollAmount = 320; // card width + gap
-    const currentScroll = container.scrollLeft;
-    const newPosition = direction === 'left' 
-      ? currentScroll - scrollAmount 
-      : currentScroll + scrollAmount;
-    
-    container.scrollTo({ left: newPosition, behavior: 'smooth' });
-  };
 
   if (isLoading) {
     return (
@@ -224,45 +210,12 @@ export function ClientsSlider({ view, clients: providedClients }: ClientsSliderP
     );
   }
 
+  // Grid view instead of slider
   return (
-    <div className="relative">
-      <div className="flex items-center gap-4 mb-4">
-        <div className="flex gap-2 ml-auto">
-          <button
-            onClick={() => scroll('left')}
-            className="p-2 rounded-full border border-gray-300 hover:bg-gray-50"
-            style={{ borderColor: '#44B080', color: '#44B080' }}
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => scroll('right')}
-            className="p-2 rounded-full border border-gray-300 hover:bg-gray-50"
-            style={{ borderColor: '#44B080', color: '#44B080' }}
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-
-      <div
-        ref={scrollContainer}
-        className="flex gap-4 overflow-x-auto scrollbar-hide pb-4"
-        style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-        }}
-      >
-        {clients.map((client) => (
-          <ClientCard key={client.id} client={client} />
-        ))}
-      </div>
-
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {clients.map((client) => (
+        <ClientCard key={client.id} client={client} />
+      ))}
     </div>
   );
 }

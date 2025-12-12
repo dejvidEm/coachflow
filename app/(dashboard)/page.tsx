@@ -14,18 +14,20 @@ import { Preloader } from '@/components/preloader';
 const PRELOADER_SEEN_KEY = 'coachflow_preloader_seen';
 
 export default function HomePage() {
-  // Start with false to match server render (prevents hydration mismatch)
+  // Start with true to show preloader immediately (prevents flash of content)
   // Then check sessionStorage after component mounts (client-side only)
-  const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
+  const [isPreloaderVisible, setIsPreloaderVisible] = useState(true);
   const [isSliding, setIsSliding] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
 
   // Check sessionStorage after component mounts (client-side only)
   useEffect(() => {
     // Check if preloader has been seen in this session
     const hasSeenPreloader = sessionStorage.getItem(PRELOADER_SEEN_KEY);
-    if (!hasSeenPreloader) {
-      setIsPreloaderVisible(true);
+    if (hasSeenPreloader) {
+      setIsPreloaderVisible(false);
     }
+    setIsChecking(false);
   }, []);
 
   const handlePreloaderComplete = () => {
@@ -42,7 +44,14 @@ export default function HomePage() {
 
   return (
     <>
-      <main className="relative">
+      <main 
+        className="relative"
+        style={{
+          opacity: isPreloaderVisible ? 0 : 1,
+          visibility: isPreloaderVisible ? 'hidden' : 'visible',
+          transition: 'opacity 0.3s ease-in-out',
+        }}
+      >
         <div id="home">
           <HeroSection />
         </div>

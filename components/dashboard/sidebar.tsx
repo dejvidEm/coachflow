@@ -91,6 +91,7 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
     { href: '/dashboard/exercises', icon: Dumbbell, label: 'Exercises', show: hasPaidPlan, dataAttr: 'exercises-section' },
     { href: '/dashboard/supplements', icon: Pill, label: 'Supplements', show: hasPaidPlan },
     { href: '/dashboard/clients', icon: Users, label: 'Clients', show: hasPaidPlan, dataAttr: 'clients-section' },
+    { href: '/dashboard/pdf', icon: FileText, label: 'PDF', show: hasPaidPlan },
   ];
 
   return (

@@ -14,6 +14,14 @@ function transformUser(row: any): User {
     pdfLogoUrl: row.pdf_logo_url ? String(row.pdf_logo_url) : null,
     pdfLogoPosition: row.pdf_logo_position || null,
     pdfAccentColor: row.pdf_accent_color || null,
+    pdfFirstPageHeading: row.pdf_first_page_heading || null,
+    pdfFirstPageText: row.pdf_first_page_text || null,
+    pdfFirstPageFooter: row.pdf_first_page_footer || null,
+    pdfFirstPageShowLogo: row.pdf_first_page_show_logo ?? false,
+    pdfLastPageHeading: row.pdf_last_page_heading || null,
+    pdfLastPageText: row.pdf_last_page_text || null,
+    pdfLastPageFooter: row.pdf_last_page_footer || null,
+    pdfLastPageShowLogo: row.pdf_last_page_show_logo ?? false,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     deletedAt: row.deleted_at,
@@ -92,6 +100,40 @@ export async function updateUserPdfSettings(pdfSettings: {
       pdf_logo_url = ${pdfSettings.pdfLogoUrl !== undefined ? pdfSettings.pdfLogoUrl : null},
       pdf_logo_position = ${pdfSettings.pdfLogoPosition !== undefined ? pdfSettings.pdfLogoPosition : null},
       pdf_accent_color = ${pdfSettings.pdfAccentColor !== undefined ? pdfSettings.pdfAccentColor : null},
+      updated_at = NOW()
+    WHERE id = ${user.id}
+    RETURNING *
+  `;
+
+  return transformUser(users[0]);
+}
+
+export async function updateUserPdfPages(pdfPages: {
+  pdfFirstPageHeading?: string | null;
+  pdfFirstPageText?: string | null;
+  pdfFirstPageFooter?: string | null;
+  pdfFirstPageShowLogo?: boolean | null;
+  pdfLastPageHeading?: string | null;
+  pdfLastPageText?: string | null;
+  pdfLastPageFooter?: string | null;
+  pdfLastPageShowLogo?: boolean | null;
+}): Promise<User> {
+  const user = await getUser();
+  if (!user) {
+    throw new Error('User is not authenticated');
+  }
+
+  const users = await client<any[]>`
+    UPDATE users
+    SET 
+      pdf_first_page_heading = ${pdfPages.pdfFirstPageHeading !== undefined ? pdfPages.pdfFirstPageHeading : null},
+      pdf_first_page_text = ${pdfPages.pdfFirstPageText !== undefined ? pdfPages.pdfFirstPageText : null},
+      pdf_first_page_footer = ${pdfPages.pdfFirstPageFooter !== undefined ? pdfPages.pdfFirstPageFooter : null},
+      pdf_first_page_show_logo = ${pdfPages.pdfFirstPageShowLogo !== undefined ? pdfPages.pdfFirstPageShowLogo : false},
+      pdf_last_page_heading = ${pdfPages.pdfLastPageHeading !== undefined ? pdfPages.pdfLastPageHeading : null},
+      pdf_last_page_text = ${pdfPages.pdfLastPageText !== undefined ? pdfPages.pdfLastPageText : null},
+      pdf_last_page_footer = ${pdfPages.pdfLastPageFooter !== undefined ? pdfPages.pdfLastPageFooter : null},
+      pdf_last_page_show_logo = ${pdfPages.pdfLastPageShowLogo !== undefined ? pdfPages.pdfLastPageShowLogo : false},
       updated_at = NOW()
     WHERE id = ${user.id}
     RETURNING *

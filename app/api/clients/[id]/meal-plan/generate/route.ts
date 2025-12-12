@@ -86,6 +86,15 @@ export async function POST(
       logoUrl: user.pdfLogoUrl,
       logoPosition: user.pdfLogoPosition,
       accentColor: user.pdfAccentColor,
+      userName: user.name,
+      firstPageHeading: user.pdfFirstPageHeading,
+      firstPageText: user.pdfFirstPageText,
+      firstPageFooter: user.pdfFirstPageFooter,
+      firstPageShowLogo: user.pdfFirstPageShowLogo,
+      lastPageHeading: user.pdfLastPageHeading,
+      lastPageText: user.pdfLastPageText,
+      lastPageFooter: user.pdfLastPageFooter,
+      lastPageShowLogo: user.pdfLastPageShowLogo,
     });
 
     // Generate PDF as Blob

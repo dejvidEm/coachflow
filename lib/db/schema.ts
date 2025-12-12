@@ -9,6 +9,14 @@ export interface User {
   pdfLogoUrl: string | null;
   pdfLogoPosition: 'top-left' | 'top-center' | 'top-right' | null;
   pdfAccentColor: string | null;
+  pdfFirstPageHeading: string | null;
+  pdfFirstPageText: string | null;
+  pdfFirstPageFooter: string | null;
+  pdfFirstPageShowLogo: boolean | null;
+  pdfLastPageHeading: string | null;
+  pdfLastPageText: string | null;
+  pdfLastPageFooter: string | null;
+  pdfLastPageShowLogo: boolean | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;

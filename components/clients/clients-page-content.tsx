@@ -174,7 +174,9 @@ export function ClientsPageContent() {
         filterLabel="Goal"
       />
 
-      <ClientsSlider view={view} clients={filteredAndSortedClients} />
+      <div className="mt-8">
+        <ClientsSlider view={view} clients={filteredAndSortedClients} />
+      </div>
       <AddClientModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
