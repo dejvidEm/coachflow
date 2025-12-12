@@ -47,6 +47,23 @@
 - **Example**: `pk_live_...` or `pk_test_...`
 - **Note**: Safe to expose client-side (starts with `NEXT_PUBLIC_`)
 
+### 4. Email Configuration (Resend)
+
+#### `RESEND_API_KEY` ⚠️ **KEEP SECRET**
+- **What it is**: Resend API key for sending emails
+- **Where to find it**: Resend Dashboard → API Keys → Create API Key
+- **Example**: `re_xxxxxxxxxxxxxxxxxxxxx`
+- **⚠️ SECURITY WARNING**: Keep secret, never expose to client
+- **Required for**: Sending meal plan and training plan PDFs to clients
+
+#### `RESEND_FROM_EMAIL`
+- **What it is**: Email address to send from
+- **Options**:
+  - `onboarding@resend.dev` (for testing - provided by Resend)
+  - `CoachFlow <noreply@yourdomain.com>` (for production - requires domain verification)
+- **Example**: `CoachFlow <noreply@yourdomain.com>`
+- **Note**: For production, verify your domain in Resend dashboard first
+
 ## Setup Instructions
 
 ### Step 1: Create `.env` file
@@ -71,6 +88,10 @@ DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+# Email (Resend)
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
+RESEND_FROM_EMAIL=CoachFlow <onboarding@resend.dev>
 ```
 
 ### Step 3: Restart Development Server
@@ -111,6 +132,12 @@ pnpm dev
 - Make sure you've created the required Supabase Storage buckets:
   - `meal_pdf` (for meal plan PDFs)
   - `training_pdf` (for training plan PDFs)
+
+### "RESEND_API_KEY environment variable is not set"
+- Make sure you've added `RESEND_API_KEY` to your environment variables
+- In Vercel: Settings → Environment Variables → Add `RESEND_API_KEY`
+- Restart your development server after adding it locally
+- Redeploy on Vercel after adding the variable
   - `pdf_logos` (for logo uploads)
 - Buckets should be **public** for PDFs and logos
 

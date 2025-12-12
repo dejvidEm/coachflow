@@ -269,7 +269,34 @@
   * {
     @apply border-border outline-ring/50;
   }
+  
+  /* Prevent layout shift when scrollbar appears/disappears */
+  html {
+    /* Reserve space for scrollbar on both sides to prevent any shift */
+    scrollbar-gutter: stable;
+  }
+  
   body {
     @apply bg-background text-foreground;
+    /* Prevent layout shift when scrollbar appears/disappears */
+    scrollbar-gutter: stable;
+    /* Ensure body width accounts for scrollbar */
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Ensure consistent scrollbar behavior during navigation */
+  main[class*="overflow-y-auto"] {
+    scrollbar-gutter: stable;
+  }
+  
+  /* Prevent layout shift on main content area */
+  main {
+    scrollbar-gutter: stable;
+  }
+  
+  /* Ensure sections don't shift */
+  section {
+    scrollbar-gutter: stable;
   }
 }

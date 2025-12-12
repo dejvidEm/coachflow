@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { WordRotate } from '@/components/flipper';
 
 interface PreloaderProps {
   onComplete: () => void;
@@ -8,57 +9,42 @@ interface PreloaderProps {
 }
 
 export function Preloader({ onComplete, onSliding }: PreloaderProps) {
-  const [currentText, setCurrentText] = useState(0);
-  const [isFlipping, setIsFlipping] = useState(false);
   const [isFinalStage, setIsFinalStage] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
 
   const texts = ['Ready?', 'Preparing..', 'Coach!'];
-  const currentWord = texts[currentText];
+  const duration = 1500; // Duration for each word
 
   useEffect(() => {
-    // First transition: Ready? -> Preparing.. (after 1.5s)
+    // Calculate when "Coach" appears (index 2)
+    // "Ready?" at 0s, "Preparing.." at 1.5s, "Coach" at 3s
+    const coachAppearsAt = duration * 2; // 3000ms (3 seconds)
+    
+    // Wait a bit after "Coach" appears to show it in black/white first
+    const showCoachInBlackWhite = 800; // Show "Coach" in black/white for 0.8s
+
+    // Color change: after "Coach" has been shown in black/white, change to green background and white text
     const timer1 = setTimeout(() => {
-      setIsFlipping(true);
-      setTimeout(() => {
-        setCurrentText(1);
-        setIsFlipping(false);
-      }, 400); // Half of flip duration
-    }, 1500);
-
-    // Second transition: Preparing.. -> Coach! (after 3s total)
-    const timer2 = setTimeout(() => {
-      setIsFlipping(true);
-      setTimeout(() => {
-        setCurrentText(2);
-        setIsFlipping(false);
-      }, 400);
-    }, 3000);
-
-    // Color change: black/white -> green/white (after Coach! appears, at 4.5s)
-    const timer3 = setTimeout(() => {
       setIsFinalStage(true);
-    }, 4500);
+    }, coachAppearsAt + showCoachInBlackWhite);
 
-    // Slide up and reveal (at 5.5s)
-    const timer4 = setTimeout(() => {
+    // Slide up and reveal (1 second after color change)
+    const timer2 = setTimeout(() => {
       setIsSliding(true);
       onSliding?.();
-    }, 5500);
+    }, coachAppearsAt + showCoachInBlackWhite + 1300);
 
-    // Complete and remove preloader (at 6.5s)
-    const timer5 = setTimeout(() => {
+    // Complete and remove preloader (1.5 seconds after slide starts)
+    const timer3 = setTimeout(() => {
       onComplete();
-    }, 6500);
+    }, coachAppearsAt + showCoachInBlackWhite + 2800);
 
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
-      clearTimeout(timer4);
-      clearTimeout(timer5);
     };
-  }, [onComplete, onSliding]);
+  }, [onComplete, onSliding, duration]);
 
   return (
     <div
@@ -66,7 +52,7 @@ export function Preloader({ onComplete, onSliding }: PreloaderProps) {
       style={{
         backgroundColor: isFinalStage ? '#44B080' : '#FFFFFF',
         transform: isSliding ? 'translateY(-100%)' : 'translateY(0%)',
-        transition: 'transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.5s ease-in-out',
+        transition: 'transform .8s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.5s ease-in-out',
         willChange: 'transform',
       }}
     >
@@ -77,19 +63,17 @@ export function Preloader({ onComplete, onSliding }: PreloaderProps) {
           transition: 'color 0.5s ease-in-out',
         }}
       >
-        <h1
-          className={`text-6xl md:text-8xl font-bold ${
-            isFlipping 
-              ? 'scale-y-0 opacity-0' 
-              : 'scale-y-100 opacity-100'
-          }`}
-          style={{
-            transformOrigin: 'center',
-            transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease-in-out',
+        <WordRotate
+          words={texts}
+          duration={duration}
+          className="text-6xl md:text-4xl font-bold"
+          motionProps={{
+            initial: { opacity: 0, y: -50 },
+            animate: { opacity: 1, y: 0 },
+            exit: { opacity: 0, y: 50 },
+            transition: { duration: 0.2, ease: 'easeOut' },
           }}
-        >
-          {currentWord}
-        </h1>
+        />
       </div>
     </div>
   );

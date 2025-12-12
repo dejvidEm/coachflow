@@ -134,7 +134,7 @@ export function MealsPageContent() {
   ];
 
   return (
-    <section className="flex-1 p-4 lg:p-8">
+    <section className="flex-1 p-4 lg:p-8" data-onboarding="meals-section">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <UtensilsCrossed className="h-6 w-6" style={{ color: '#44B080' }} />

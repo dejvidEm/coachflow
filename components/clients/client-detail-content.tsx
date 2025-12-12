@@ -6,7 +6,7 @@ import { Client } from '@/lib/db/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { ArrowLeft, Edit, Trash2, Loader2, FileText, Copy, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Loader2, FileText, Copy, Check, ChevronDown, ChevronUp, Mail, Send } from 'lucide-react';
 import useSWR, { mutate } from 'swr';
 import { EditClientModal } from './edit-client-modal';
 import { Modal } from '@/components/ui/modal';
@@ -28,6 +28,12 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
   const [copiedTraining, setCopiedTraining] = useState(false);
   const [showMealPdfPreview, setShowMealPdfPreview] = useState(true);
   const [showTrainingPdfPreview, setShowTrainingPdfPreview] = useState(true);
+  const [isSendMealPlanModalOpen, setIsSendMealPlanModalOpen] = useState(false);
+  const [isSendTrainingPlanModalOpen, setIsSendTrainingPlanModalOpen] = useState(false);
+  const [isSendingMealPlan, setIsSendingMealPlan] = useState(false);
+  const [isSendingTrainingPlan, setIsSendingTrainingPlan] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [sendSuccess, setSendSuccess] = useState<string | null>(null);
 
   const { data, error, isLoading, mutate: revalidateClient } = useSWR<{ client: Client & { hasMealPdf?: boolean; hasTrainingPdf?: boolean } }>(
     `/api/clients/${clientId}`,
@@ -71,6 +77,66 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
       setDeleteError(err.message || 'An error occurred during deletion');
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleSendMealPlan = async () => {
+    if (!client?.email) {
+      setSendError('Client does not have an email address');
+      return;
+    }
+
+    setIsSendingMealPlan(true);
+    setSendError(null);
+    setSendSuccess(null);
+
+    try {
+      const response = await fetch(`/api/clients/${clientId}/meal-plan/send`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send meal plan');
+      }
+
+      setSendSuccess('Meal plan PDF sent successfully!');
+      setIsSendMealPlanModalOpen(false);
+      setTimeout(() => setSendSuccess(null), 5000);
+    } catch (err: any) {
+      setSendError(err.message || 'An error occurred while sending the email');
+    } finally {
+      setIsSendingMealPlan(false);
+    }
+  };
+
+  const handleSendTrainingPlan = async () => {
+    if (!client?.email) {
+      setSendError('Client does not have an email address');
+      return;
+    }
+
+    setIsSendingTrainingPlan(true);
+    setSendError(null);
+    setSendSuccess(null);
+
+    try {
+      const response = await fetch(`/api/clients/${clientId}/training-plan/send`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send training plan');
+      }
+
+      setSendSuccess('Training plan PDF sent successfully!');
+      setIsSendTrainingPlanModalOpen(false);
+      setTimeout(() => setSendSuccess(null), 5000);
+    } catch (err: any) {
+      setSendError(err.message || 'An error occurred while sending the email');
+    } finally {
+      setIsSendingTrainingPlan(false);
     }
   };
 
@@ -276,6 +342,7 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                     style={{ backgroundColor: '#44B080' }}
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3a9a6d'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#44B080'}
+                    data-onboarding="pdf-feature"
                   >
                     <FileText className="h-4 w-4 mr-2" />
                     {client.hasMealPdf ? 'Regenerate Meal Plan' : 'Generate Meal Plan'}
@@ -357,6 +424,20 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                                 </>
                               )}
                             </Button>
+                            {client.email && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIsSendMealPlanModalOpen(true);
+                                }}
+                                className="text-[#44B080] hover:text-[#3a9a6d] hover:bg-[#44B080]/10"
+                              >
+                                <Send className="h-4 w-4 mr-2" />
+                                Send Email
+                              </Button>
+                            )}
                           </div>
                           <ChevronDown
                             className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
@@ -484,6 +565,20 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
                                 </>
                               )}
                             </Button>
+                            {client.email && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIsSendTrainingPlanModalOpen(true);
+                                }}
+                                className="text-[#44B080] hover:text-[#3a9a6d] hover:bg-[#44B080]/10"
+                              >
+                                <Send className="h-4 w-4 mr-2" />
+                                Send Email
+                              </Button>
+                            )}
                           </div>
                           <ChevronDown
                             className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
@@ -553,6 +648,100 @@ export function ClientDetailContent({ clientId }: ClientDetailContentProps) {
               </>
             ) : (
               'Delete'
+            )}
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Send Meal Plan Confirmation Modal */}
+      <Modal
+        isOpen={isSendMealPlanModalOpen}
+        onClose={() => {
+          setIsSendMealPlanModalOpen(false);
+          setSendError(null);
+        }}
+        title="Send Updated Meal Plan"
+      >
+        <p className="text-gray-700 mb-4">
+          Are you sure you want to send the updated meal plan PDF to <strong>{client.email}</strong>?
+        </p>
+        {sendError && <p className="text-red-500 text-sm mb-4">{sendError}</p>}
+        {sendSuccess && <p className="text-green-600 text-sm mb-4">{sendSuccess}</p>}
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setIsSendMealPlanModalOpen(false);
+              setSendError(null);
+            }}
+            disabled={isSendingMealPlan}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSendMealPlan}
+            disabled={isSendingMealPlan}
+            style={{ backgroundColor: '#44B080' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3a9a6d'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#44B080'}
+          >
+            {isSendingMealPlan ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Mail className="mr-2 h-4 w-4" />
+                Send Email
+              </>
+            )}
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Send Training Plan Confirmation Modal */}
+      <Modal
+        isOpen={isSendTrainingPlanModalOpen}
+        onClose={() => {
+          setIsSendTrainingPlanModalOpen(false);
+          setSendError(null);
+        }}
+        title="Send Updated Training Plan"
+      >
+        <p className="text-gray-700 mb-4">
+          Are you sure you want to send the updated training plan PDF to <strong>{client.email}</strong>?
+        </p>
+        {sendError && <p className="text-red-500 text-sm mb-4">{sendError}</p>}
+        {sendSuccess && <p className="text-green-600 text-sm mb-4">{sendSuccess}</p>}
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setIsSendTrainingPlanModalOpen(false);
+              setSendError(null);
+            }}
+            disabled={isSendingTrainingPlan}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSendTrainingPlan}
+            disabled={isSendingTrainingPlan}
+            style={{ backgroundColor: '#44B080' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3a9a6d'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#44B080'}
+          >
+            {isSendingTrainingPlan ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Mail className="mr-2 h-4 w-4" />
+                Send Email
+              </>
             )}
           </Button>
         </div>

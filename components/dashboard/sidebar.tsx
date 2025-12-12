@@ -86,11 +86,11 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
   `;
 
   const navItems = [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', show: hasPaidPlan },
-    { href: '/dashboard/meals', icon: UtensilsCrossed, label: 'Meals', show: hasPaidPlan },
-    { href: '/dashboard/exercises', icon: Dumbbell, label: 'Exercises', show: hasPaidPlan },
+    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', show: hasPaidPlan, dataAttr: 'dashboard' },
+    { href: '/dashboard/meals', icon: UtensilsCrossed, label: 'Meals', show: hasPaidPlan, dataAttr: 'meals-section' },
+    { href: '/dashboard/exercises', icon: Dumbbell, label: 'Exercises', show: hasPaidPlan, dataAttr: 'exercises-section' },
     { href: '/dashboard/supplements', icon: Pill, label: 'Supplements', show: hasPaidPlan },
-    { href: '/dashboard/clients', icon: Users, label: 'Clients', show: hasPaidPlan },
+    { href: '/dashboard/clients', icon: Users, label: 'Clients', show: hasPaidPlan, dataAttr: 'clients-section' },
   ];
 
   return (
@@ -131,7 +131,10 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
               title={isCollapsed ? item.label : undefined}
               asChild
             >
-              <Link href={item.href}>
+              <Link 
+                href={item.href}
+                data-onboarding={item.dataAttr}
+              >
                 <Icon className={`h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
                 {!isCollapsed && <span>{item.label}</span>}
               </Link>
@@ -148,6 +151,7 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
                 className={`shadow-none my-1 w-full justify-between ${
                   isSettingsPageActive ? 'bg-gray-100' : ''
                 }`}
+                data-onboarding="settings-section"
               >
                 <div className="flex items-center">
                   <Settings className="h-4 w-4 mr-2" />

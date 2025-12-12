@@ -102,6 +102,41 @@ interface Translations {
       legal: { title: string; links: string[] }
     }
   }
+  onboarding: {
+    welcome: {
+      title: string
+      subtitle: string
+      step1Title: string
+      step1Description: string
+      step2Title: string
+      step2Description: string
+      step3Title: string
+      step3Description: string
+      startTour: string
+      skipTour: string
+    }
+    steps: {
+      welcome: { title: string; description: string }
+      dashboardOverview: { title: string; description: string }
+      createClient: { title: string; description: string; actionLabel: string }
+      createMeal: { title: string; description: string; actionLabel: string }
+      createExercise: { title: string; description: string; actionLabel: string }
+      generatePdf: { title: string; description: string }
+      teamSettings: { title: string; description: string }
+      complete: { title: string; description: string }
+    }
+    tooltip: {
+      previous: string
+      next: string
+      skip: string
+      getStarted: string
+      stepOf: string
+    }
+    restart: {
+      restartTour: string
+      viewChangelog: string
+    }
+  }
 }
 
 const translations: Record<Language, Translations> = {
@@ -282,6 +317,68 @@ const translations: Record<Language, Translations> = {
         },
       },
     },
+    onboarding: {
+      welcome: {
+        title: "Vitajte v CoachFlow",
+        subtitle: "Začnime za 2 minúty",
+        step1Title: "Spravujte svojich klientov",
+        step1Description: "Pridajte klientov, sledujte ich pokrok a organizujte všetko na jednom mieste.",
+        step2Title: "Vytvárajte plány",
+        step2Description: "Vytvárajte jedálničky a tréningové programy šité na mieru každému klientovi.",
+        step3Title: "Generujte a zdieľajte",
+        step3Description: "Vytvárajte profesionálne PDF a posielajte ich priamo svojim klientom.",
+        startTour: "Spustiť prehliadku",
+        skipTour: "Preskúmam sám",
+      },
+      steps: {
+        welcome: {
+          title: "Vitajte v CoachFlow! 🎉",
+          description: "Urobme si rýchlu prehliadku, aby sme vám pomohli začať. Ukážeme vám kľúčové funkcie v niekoľkých krokoch.",
+        },
+        dashboardOverview: {
+          title: "Váš Dashboard",
+          description: "Toto je váš hlavný dashboard, kde môžete vidieť prehľad vašich klientov a rýchle štatistiky. Navigujte medzi rôznymi sekciami pomocou bočného menu.",
+        },
+        createClient: {
+          title: "Spravujte svojich klientov",
+          description: "Kliknite sem a pridajte svojho prvého klienta. Môžete pridať ich informácie, fitness ciele a sledovať ich pokrok.",
+          actionLabel: "Prejsť na Klientov",
+        },
+        createMeal: {
+          title: "Vytvárajte jedálničky",
+          description: "Vytvorte si databázu jedál a vytvárajte vlastné jedálničky pre svojich klientov. Každé jedlo obsahuje makroživiny a nutričné informácie.",
+          actionLabel: "Prejsť na Jedlá",
+        },
+        createExercise: {
+          title: "Vytvorte knižnicu cvičení",
+          description: "Pridajte cvičenia do svojej knižnice s inštrukciami, svalovými skupinami a obrázkami. Použite ich na vytvorenie tréningových plánov.",
+          actionLabel: "Prejsť na Cvičenia",
+        },
+        generatePdf: {
+          title: "Generujte profesionálne PDF",
+          description: "Vytvárajte krásne, brandované PDF pre jedálničky a tréningové programy. Posielajte ich priamo svojim klientom cez e-mail.",
+        },
+        teamSettings: {
+          title: "Tím a Nastavenia",
+          description: "Pozvite členov tímu, spravujte svoje predplatné a prispôsobte si nastavenia. Všetko je tu zorganizované.",
+        },
+        complete: {
+          title: "Všetko je pripravené! 🚀",
+          description: "Dokončili ste prehliadku! Začnite pridaním svojho prvého klienta a vytvorením jedálnička. Potrebujete pomoc? Pozrite si našu dokumentáciu alebo kontaktujte podporu.",
+        },
+      },
+      tooltip: {
+        previous: "Predchádzajúce",
+        next: "Ďalšie",
+        skip: "Preskočiť",
+        getStarted: "Začať",
+        stepOf: "Krok {current} z {total}",
+      },
+      restart: {
+        restartTour: "Spustiť prehliadku znova",
+        viewChangelog: "Zobraziť zmeny",
+      },
+    },
   },
   en: {
     nav: {
@@ -457,6 +554,68 @@ const translations: Record<Language, Translations> = {
           title: "Legal",
           links: ["Privacy", "Terms", "Security", "Cookies"],
         },
+      },
+    },
+    onboarding: {
+      welcome: {
+        title: "Welcome to CoachFlow",
+        subtitle: "Let's get you started in just 2 minutes",
+        step1Title: "Manage Your Clients",
+        step1Description: "Add clients, track their progress, and organize everything in one place.",
+        step2Title: "Create Plans",
+        step2Description: "Build meal plans and training programs tailored to each client's goals.",
+        step3Title: "Generate & Share",
+        step3Description: "Create professional PDFs and send them directly to your clients.",
+        startTour: "Start Guided Tour",
+        skipTour: "I'll explore on my own",
+      },
+      steps: {
+        welcome: {
+          title: "Welcome to CoachFlow! 🎉",
+          description: "Let's take a quick tour to help you get started. We'll show you the key features in just a few steps.",
+        },
+        dashboardOverview: {
+          title: "Your Dashboard",
+          description: "This is your main dashboard where you can see an overview of your clients and quick stats. Navigate to different sections using the sidebar.",
+        },
+        createClient: {
+          title: "Manage Your Clients",
+          description: "Click here to add your first client. You can add their information, fitness goals, and track their progress.",
+          actionLabel: "Go to Clients",
+        },
+        createMeal: {
+          title: "Create Meal Plans",
+          description: "Build your meal database and create custom meal plans for your clients. Each meal includes macros and nutritional information.",
+          actionLabel: "Go to Meals",
+        },
+        createExercise: {
+          title: "Build Exercise Library",
+          description: "Add exercises to your library with instructions, muscle groups, and images. Use them to create training plans.",
+          actionLabel: "Go to Exercises",
+        },
+        generatePdf: {
+          title: "Generate Professional PDFs",
+          description: "Create beautiful, branded PDFs for meal plans and training programs. Send them directly to your clients via email.",
+        },
+        teamSettings: {
+          title: "Team & Settings",
+          description: "Invite team members, manage your subscription, and customize your settings. Everything is organized here.",
+        },
+        complete: {
+          title: "You're All Set! 🚀",
+          description: "You've completed the tour! Start by adding your first client and creating a meal plan. Need help? Check our documentation or contact support.",
+        },
+      },
+      tooltip: {
+        previous: "Previous",
+        next: "Next",
+        skip: "Skip",
+        getStarted: "Get Started",
+        stepOf: "Step {current} of {total}",
+      },
+      restart: {
+        restartTour: "Restart Tour",
+        viewChangelog: "View Changelog",
       },
     },
   },

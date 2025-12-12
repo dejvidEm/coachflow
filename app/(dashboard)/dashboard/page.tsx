@@ -3,6 +3,7 @@ import { getTeamForUser, getUser } from '@/lib/db/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart3, TrendingUp, Users, Activity } from 'lucide-react';
 import { ClientsGraph } from '@/components/dashboard/clients-graph';
+import { DashboardWrapper } from '@/components/onboarding/dashboard-wrapper';
 
 export default async function DashboardPage() {
   // First check authentication
@@ -21,10 +22,11 @@ export default async function DashboardPage() {
   }
 
   return (
-    <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
-        Dashboard
-      </h1>
+    <DashboardWrapper>
+      <section className="flex-1 p-4 lg:p-8" data-onboarding="dashboard">
+        <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+          Dashboard
+        </h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <Card>
@@ -88,5 +90,6 @@ export default async function DashboardPage() {
         </Card>
       </div>
     </section>
+    </DashboardWrapper>
   );
 }

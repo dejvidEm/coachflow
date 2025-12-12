@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { use, useState, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Home, LogOut } from 'lucide-react';
+import { RestartTourButton } from '@/components/onboarding/restart-tour-button';
+import { OnboardingProvider } from '@/lib/onboarding/context';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -146,6 +148,11 @@ function Header() {
           </nav>
         )}
         <div className="flex items-center space-x-4">
+          {isInsideApp && (
+            <Suspense fallback={<div className="h-9" />}>
+              <RestartTourButton />
+            </Suspense>
+          )}
           <Suspense fallback={<div className="h-9" />}>
             <UserMenu />
           </Suspense>
@@ -157,11 +164,13 @@ function Header() {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <section className="flex flex-col min-h-screen">
-      <Header />
-      <div className="pt-16">
-        {children}
-      </div>
-    </section>
+    <OnboardingProvider>
+      <section className="flex flex-col min-h-screen">
+        <Header />
+        <div className="pt-16">
+          {children}
+        </div>
+      </section>
+    </OnboardingProvider>
   );
 }

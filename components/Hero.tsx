@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Play, Sparkles } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { MacBookMockup } from "@/components/macbook-mockup"
 
 export function HeroSection() {
   const { t } = useLanguage()
@@ -74,6 +75,11 @@ export function HeroSection() {
               </div>
               <p className="text-sm text-neutral-500">{t.hero.socialProof}</p>
             </div>
+          </div>
+
+          {/* MacBook Mockup */}
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-700">
+            <MacBookMockup />
           </div>
         </div>
       </div>

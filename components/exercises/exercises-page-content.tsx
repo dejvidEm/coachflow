@@ -114,7 +114,7 @@ export function ExercisesPageContent() {
   ];
 
   return (
-    <section className="flex-1 p-4 lg:p-8">
+    <section className="flex-1 p-4 lg:p-8" data-onboarding="exercises-section">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Dumbbell className="h-6 w-6" style={{ color: '#44B080' }} />
