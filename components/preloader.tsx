@@ -66,7 +66,7 @@ export function Preloader({ onComplete, onSliding }: PreloaderProps) {
         <WordRotate
           words={texts}
           duration={duration}
-          className="text-6xl md:text-4xl font-bold"
+          className="text-md md:text-2xl font-bold"
           motionProps={{
             initial: { opacity: 0, y: -50 },
             animate: { opacity: 1, y: 0 },

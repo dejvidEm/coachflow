@@ -165,12 +165,12 @@ function Header() {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <OnboardingProvider>
-      <section className="flex flex-col min-h-screen">
-        <Header />
-        <div className="pt-16">
-          {children}
-        </div>
-      </section>
+    <section className="flex flex-col min-h-screen">
+      <Header />
+      <div className="pt-16">
+        {children}
+      </div>
+    </section>
     </OnboardingProvider>
   );
 }
