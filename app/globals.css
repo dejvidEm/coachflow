@@ -259,6 +259,24 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
 }
 
 /*
@@ -269,13 +287,13 @@
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   /* Prevent layout shift when scrollbar appears/disappears */
   html {
     /* Reserve space for scrollbar on both sides to prevent any shift */
     scrollbar-gutter: stable;
   }
-  
+
   body {
     @apply bg-background text-foreground;
     /* Prevent layout shift when scrollbar appears/disappears */
@@ -284,17 +302,17 @@
     width: 100%;
     overflow-x: hidden;
   }
-  
+
   /* Ensure consistent scrollbar behavior during navigation */
   main[class*="overflow-y-auto"] {
     scrollbar-gutter: stable;
   }
-  
+
   /* Prevent layout shift on main content area */
   main {
     scrollbar-gutter: stable;
   }
-  
+
   /* Ensure sections don't shift */
   section {
     scrollbar-gutter: stable;

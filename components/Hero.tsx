@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Play, Sparkles } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-import { MacBookMockup } from "@/components/macbook-mockup"
+import { Safari } from "@/components/ui/safari"
+import { DashboardPreview } from "@/components/dashboard/dashboard-preview"
 
 export function HeroSection() {
   const { t } = useLanguage()
@@ -77,9 +78,14 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* MacBook Mockup */}
-          <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-700">
-            <MacBookMockup />
+          {/* Safari Browser Mockup */}
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-700 max-w-5xl mx-auto mt-16 sm:mt-20 lg:mt-24">
+            <Safari 
+              url="coachflow.app/dashboard"
+              mode="default"
+            >
+              <DashboardPreview />
+            </Safari>
           </div>
         </div>
       </div>

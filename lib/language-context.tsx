@@ -155,8 +155,8 @@ const translations: Record<Language, Translations> = {
       headlineHighlight: "osobných trénerov",
       subheadline:
         "Spravujte klientov, vytvárajte tréningové plány, generujte jedálničky a exportujte profesionálne PDF — všetko na jednom mieste.",
-      ctaPrimary: "Vyskúšať zadarmo",
-      ctaSecondary: "Pozrieť demo",
+      ctaPrimary: "Získať skorší prístup",
+      ctaSecondary: "Watch demo",
       socialProof: "Obľúbené u 2 000+ trénerov",
     },
     logoCloud: {

@@ -11,6 +11,36 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-04-30.basil'
 });
 
+/**
+ * Get the base URL with proper scheme
+ */
+function getBaseUrl(): string {
+  // Check if BASE_URL is set and has a scheme
+  if (process.env.BASE_URL) {
+    const baseUrl = process.env.BASE_URL.trim();
+    // If it already has a scheme, return it
+    if (baseUrl.startsWith('http://') || baseUrl.startsWith('https://')) {
+      return baseUrl;
+    }
+    // Otherwise, add https:// in production, http:// in development
+    const scheme = process.env.NODE_ENV === 'production' ? 'https://' : 'http://';
+    return `${scheme}${baseUrl}`;
+  }
+
+  // Fallback to VERCEL_URL if available (Vercel provides this automatically)
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  // Last resort: use localhost for development
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:3000';
+  }
+
+  // Production fallback - this should not happen if env vars are set correctly
+  throw new Error('BASE_URL or VERCEL_URL environment variable must be set');
+}
+
 export async function createCheckoutSession({
   team,
   priceId
@@ -24,6 +54,8 @@ export async function createCheckoutSession({
     redirect(`/sign-up?redirect=checkout&priceId=${priceId}`);
   }
 
+  const baseUrl = getBaseUrl();
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: [
@@ -33,8 +65,8 @@ export async function createCheckoutSession({
       }
     ],
     mode: 'subscription',
-    success_url: `${process.env.BASE_URL}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.BASE_URL}/pricing`,
+    success_url: `${baseUrl}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}/pricing`,
     customer: team.stripeCustomerId || undefined,
     client_reference_id: user.id.toString(),
     allow_promotion_codes: true,
@@ -107,9 +139,11 @@ export async function createCustomerPortalSession(team: Team) {
     });
   }
 
+  const baseUrl = getBaseUrl();
+
   return stripe.billingPortal.sessions.create({
     customer: team.stripeCustomerId,
-    return_url: `${process.env.BASE_URL}/dashboard`,
+    return_url: `${baseUrl}/dashboard`,
     configuration: configuration.id
   });
 }

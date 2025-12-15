@@ -53,11 +53,6 @@ export function CTASection() {
                 <div className="absolute bottom-0 left-0 w-56 sm:w-80 h-56 sm:h-80 bg-teal-500/10 rounded-full blur-3xl" />
 
                 <div className="relative text-center max-w-3xl mx-auto">
-                  <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 mb-6 sm:mb-8">
-                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400" />
-                    <span className="text-xs sm:text-sm text-neutral-300">{t.cta.badge}</span>
-                  </div>
-
                   <h2 className="text-2xl sm:text-3xl lg:text-5xl font-semibold text-white tracking-tight mb-4 sm:mb-6 text-balance">
                     {t.cta.title}
                   </h2>

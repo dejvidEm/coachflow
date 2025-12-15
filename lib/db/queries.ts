@@ -750,10 +750,13 @@ export async function getClientStatistics() {
     throw new Error('User is not authenticated');
   }
 
-  // Get statistics about the current user's clients
+  // Get all statistics in one query for efficiency
   const stats = await client<any[]>`
     SELECT 
-      COUNT(*) as total_clients
+      COUNT(*) as total_clients,
+      COUNT(*) FILTER (WHERE meal_pdf IS NULL) as clients_without_meal_plans,
+      COUNT(*) FILTER (WHERE training_pdf IS NULL) as clients_without_trainings,
+      COUNT(*) FILTER (WHERE updated_at < NOW() - INTERVAL '30 days' AND (meal_pdf IS NOT NULL OR training_pdf IS NOT NULL)) as clients_with_old_plans
     FROM clients
     WHERE user_id = ${user.id}
   `;
@@ -783,6 +786,9 @@ export async function getClientStatistics() {
 
   return {
     totalClients: parseInt(stats[0]?.total_clients || '0'),
+    clientsWithoutMealPlans: parseInt(stats[0]?.clients_without_meal_plans || '0'),
+    clientsWithoutTrainings: parseInt(stats[0]?.clients_without_trainings || '0'),
+    clientsWithOldPlans: parseInt(stats[0]?.clients_with_old_plans || '0'),
     clientsByGoal: clientsByGoal.map(row => ({
       goal: row.fitness_goal,
       count: parseInt(row.count || '0'),

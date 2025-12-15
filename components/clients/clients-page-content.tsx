@@ -175,7 +175,7 @@ export function ClientsPageContent() {
       />
 
       <div className="mt-8">
-        <ClientsSlider view={view} clients={filteredAndSortedClients} />
+      <ClientsSlider view={view} clients={filteredAndSortedClients} />
       </div>
       <AddClientModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
