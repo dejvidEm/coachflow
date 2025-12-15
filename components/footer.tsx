@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { Instagram } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 export function Footer() {
@@ -49,15 +50,13 @@ export function Footer() {
         <div className="pt-6 sm:pt-8 border-t border-neutral-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-neutral-400 text-xs sm:text-sm text-center sm:text-left">{t.footer.copyright}</p>
           <div className="flex items-center gap-4 sm:gap-6">
-            {["Twitter", "LinkedIn", "Instagram", "YouTube"].map((social) => (
-              <Link
-                key={social}
-                href="#"
-                className="text-neutral-400 hover:text-white text-xs sm:text-sm transition-colors"
-              >
-                {social}
-              </Link>
-            ))}
+            <Link
+              href="#"
+              className="text-neutral-400 hover:text-white transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       </div>
