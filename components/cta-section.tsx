@@ -39,7 +39,7 @@ export function CTASection() {
   return (
     <section className="py-16 sm:py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative [perspective:2000px]">
+        <div className={`relative [perspective:2000px] ${isFlipped ? 'mb-32 sm:mb-0' : ''}`}>
           <div
             className={`relative transition-all duration-700 [transform-style:preserve-3d] ${
               isFlipped ? "[transform:rotateY(180deg)]" : ""
@@ -86,22 +86,22 @@ export function CTASection() {
 
             {/* Back side - Contact Form */}
             <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-              <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 p-8 sm:p-12 lg:p-20 h-full">
+              <div className="relative overflow-y-auto rounded-2xl sm:rounded-3xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 p-6 pb-0 sm:pb-12 lg:p-20">
                 {/* Decorative elements */}
                 <div className="absolute top-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-teal-500/20 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 right-0 w-56 sm:w-80 h-56 sm:h-80 bg-emerald-500/10 rounded-full blur-3xl" />
 
-                <div className="relative max-w-xl mx-auto">
+                <div className="relative max-w-xl mx-auto pb-32 sm:pb-0">
                   {/* Back button */}
                   <button
                     onClick={handleFlipBack}
-                    className="absolute top-0 left-0 inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group"
+                    className="relative sm:absolute top-0 left-0 mb-4 sm:mb-0 inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group z-10"
                   >
                     <RotateCcw className="w-4 h-4" />
                     <span className="text-sm">{t.cta.backButton}</span>
                   </button>
 
-                  <div className="text-center mb-8 pt-8 sm:pt-0">
+                  <div className="text-center mb-6 sm:mb-8 pt-0 sm:pt-8">
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 mb-4">
                       <Mail className="w-6 h-6 text-emerald-400" />
                     </div>
