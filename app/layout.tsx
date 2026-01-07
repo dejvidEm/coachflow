@@ -6,8 +6,8 @@ import { SWRConfig } from 'swr';
 import { LanguageProvider } from '@/lib/language-context';
 
 export const metadata: Metadata = {
-  title: 'Next.js SaaS Starter',
-  description: 'Get started quickly with Next.js, Postgres, and Stripe.'
+  title: 'CoachFlow — Run Your Coaching',
+  description: 'Manage clients, build training and meal plans, and deliver clean PDFs. Coaching, without the chaos.'
 };
 
 export const viewport: Viewport = {
