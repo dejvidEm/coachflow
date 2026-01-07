@@ -91,6 +91,8 @@ export async function POST(request: NextRequest) {
       fitnessGoal: validatedData.fitnessGoal,
       mealPdf: null,
       trainingPdf: null,
+      mealPlanUpdatedAt: null,
+      trainingPlanUpdatedAt: null,
     });
 
     return NextResponse.json({ client, message: 'Client created successfully' }, { status: 201 });
