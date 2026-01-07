@@ -91,7 +91,7 @@ export function CTASection() {
                 <div className="absolute top-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-teal-500/20 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 right-0 w-56 sm:w-80 h-56 sm:h-80 bg-emerald-500/10 rounded-full blur-3xl" />
 
-                <div className="relative max-w-xl mx-auto pb-32 sm:pb-0">
+                <div className="relative max-w-xl mx-auto pb-8">
                   {/* Back button */}
                   <button
                     onClick={handleFlipBack}
