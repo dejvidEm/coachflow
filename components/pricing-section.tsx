@@ -73,7 +73,7 @@ export function PricingSection() {
                 </div>
                 <div className="mb-4 sm:mb-6">
                   <span className="text-3xl sm:text-5xl font-bold text-neutral-900">
-                    ${isYearly ? prices.yearly : prices.monthly}
+                    €{isYearly ? prices.yearly : prices.monthly}
                   </span>
                   <span className="text-neutral-500 text-sm sm:text-base">{t.pricing.perMonth}</span>
                 </div>

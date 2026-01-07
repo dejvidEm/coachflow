@@ -1,34 +1,71 @@
 "use client"
 
-import { Check } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import Image from "next/image"
 
 export function HowItWorksSection() {
   const { t } = useLanguage()
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [activeStep, setActiveStep] = useState(0)
+  const autoCycleIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const [isPaused, setIsPaused] = useState(false)
 
   const steps = [
     {
       number: "01",
-      key: "step1" as const,
-      image: "/landing/landing1.jpg",
+      title: "Zaregistrujte sa a vytvorte si účet",
+      description: "Začnite za minúty jednoduchým procesom registrácie. Pre bezplatnú skúšobnú verziu nie je potrebná kreditná karta.",
     },
     {
       number: "02",
-      key: "step2" as const,
-      image: "/landing/landing2.jpg",
+      title: "Pridajte svojich klientov",
+      description: "Importujte svoj existujúci zoznam klientov alebo ich pridajte manuálne. Organizujte všetkých svojich klientov na jednom mieste.",
     },
     {
       number: "03",
-      key: "step3" as const,
-      image: "/landing/landing3.jpg",
+      title: "Vytvárajte jedálničkové a tréningové plány",
+      description: "Vytvárajte vlastné plány pomocou našich intuitívnych nástrojov. Uložte si svoje jedlá a cviky pre rýchle opätovné použitie.",
+    },
+    {
+      number: "04",
+      title: "Generujte a zdieľajte PDF",
+      description: "Exportujte krásne, značkové PDF jedným klikom. Zdieľajte profesionálne plány so svojimi klientmi okamžite.",
     },
   ]
 
+  // Auto-cycle through steps
+  useEffect(() => {
+    if (isPaused) return
+
+    autoCycleIntervalRef.current = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % steps.length)
+    }, 3000) // Change step every 3 seconds
+
+    return () => {
+      if (autoCycleIntervalRef.current) {
+        clearInterval(autoCycleIntervalRef.current)
+      }
+    }
+  }, [isPaused, steps.length])
+
+  const handleStepClick = (index: number) => {
+    setActiveStep(index)
+    setIsPaused(true)
+    // Resume auto-cycling after 5 seconds of inactivity
+    setTimeout(() => {
+      setIsPaused(false)
+    }, 5000)
+  }
+
   return (
-    <section id="how-it-works" className="py-16 sm:py-24 lg:py-32 bg-neutral-50">
+    <section 
+      ref={sectionRef}
+      id="how-it-works" 
+      className="py-16 sm:py-24 lg:py-32 bg-white"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 lg:mb-24">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 lg:mb-20">
           <p className="text-xs sm:text-sm font-medium text-emerald-600 mb-3 sm:mb-4 tracking-wide uppercase">
             {t.howItWorks.label}
           </p>
@@ -38,49 +75,56 @@ export function HowItWorksSection() {
           <p className="text-base sm:text-lg text-neutral-500 text-pretty">{t.howItWorks.subtitle}</p>
         </div>
 
-        <div className="space-y-16 sm:space-y-24 lg:space-y-32">
-          {steps.map((step, index) => {
-            const stepData = t.howItWorks.steps[step.key]
-            return (
-              <div
-                key={step.number}
-                className={`flex flex-col ${index % 2 === 1 ? "lg:flex-row-reverse" : "lg:flex-row"} items-center gap-8 sm:gap-12 lg:gap-20`}
-              >
-                <div className="flex-1 space-y-4 sm:space-y-6 text-center lg:text-left">
-                  <div className="inline-flex items-center gap-3">
-                    <span className="text-4xl sm:text-5xl font-bold text-neutral-200">{step.number}</span>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-neutral-900">{stepData.title}</h3>
-                  <p className="text-base sm:text-lg text-neutral-500 leading-relaxed">{stepData.description}</p>
-                  <ul className="space-y-2 sm:space-y-3 inline-block lg:block">
-                    {stepData.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-3">
-                        <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
-                          <Check className="w-3 h-3 text-emerald-600" />
-                        </div>
-                        <span className="text-sm sm:text-base text-neutral-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="flex-1 w-full">
-                  <div className="relative">
-                    <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-2xl sm:rounded-3xl blur-xl" />
-                    <div className="relative bg-white rounded-xl sm:rounded-2xl border border-neutral-200 shadow-xl overflow-hidden">
-                      <Image
-                        src={step.image || "/placeholder.svg"}
-                        alt={stepData.title}
-                        width={800}
-                        height={533}
-                        className="w-full aspect-[3/2] object-cover"
-                        priority={index === 0}
-                      />
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          {/* Left side - Steps */}
+          <div className="w-full lg:w-1/2 space-y-8">
+            {steps.map((step, index) => {
+              const isActive = index === activeStep
+              return (
+                <div
+                  key={step.number}
+                  onClick={() => handleStepClick(index)}
+                  className={`transition-all duration-700 ease-out cursor-pointer ${
+                    isActive
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-30 translate-x-[-10px] hover:opacity-50'
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    <span className={`text-3xl sm:text-4xl font-bold transition-colors duration-700 ${
+                      isActive ? 'text-emerald-500' : 'text-neutral-300'
+                    }`}>
+                      {step.number}
+                    </span>
+                    <div className="flex-1">
+                      <h3 className={`text-xl sm:text-2xl font-semibold mb-2 transition-colors duration-700 ${
+                        isActive ? 'text-neutral-900' : 'text-neutral-400'
+                      }`}>
+                        {step.title}
+                      </h3>
+                      <p className={`text-base sm:text-lg leading-relaxed transition-colors duration-700 ${
+                        isActive ? 'text-neutral-600' : 'text-neutral-400'
+                      }`}>
+                        {step.description}
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
+
+          {/* Right side - Image */}
+          <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
+            <Image
+              src="/brand/Mockup 4.png"
+              alt="CoachFlow How It Works"
+              width={600}
+              height={800}
+              className="w-full max-w-md h-auto rounded-2xl"
+              priority
+            />
+          </div>
         </div>
       </div>
     </section>

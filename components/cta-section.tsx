@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { ArrowRight, Sparkles, Mail, RotateCcw, CheckCircle2 } from "lucide-react"
+import { ArrowRight, Sparkles, Mail, RotateCcw, CheckCircle2, Calendar } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 export function CTASection() {
@@ -53,21 +53,20 @@ export function CTASection() {
                 <div className="absolute bottom-0 left-0 w-56 sm:w-80 h-56 sm:h-80 bg-teal-500/10 rounded-full blur-3xl" />
 
                 <div className="relative text-center max-w-3xl mx-auto">
-                  <h2 className="text-2xl sm:text-3xl lg:text-5xl font-semibold text-white tracking-tight mb-4 sm:mb-6 text-balance">
+                  <h2 className="text-2xl sm:text-3xl lg:text-5xl font-semibold leading-normal text-white mb-4 sm:mb-6 text-balance">
                     {t.cta.title}
                   </h2>
                   <p className="text-base sm:text-lg text-neutral-400 mb-8 sm:mb-10 text-pretty">{t.cta.subtitle}</p>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                    <Button className="w-full sm:w-auto bg-white text-neutral-900 hover:bg-neutral-100 rounded-full px-6 sm:px-8 py-5 sm:py-6 text-sm sm:text-base font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105">
-                      {t.cta.ctaPrimary}
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full sm:w-auto text-neutral-300 hover:text-white hover:bg-white/10 rounded-full px-6 py-5 sm:py-6 text-sm sm:text-base"
+                    <Button 
+                      asChild
+                      className="w-full sm:w-auto bg-white text-neutral-900 hover:bg-neutral-100 rounded-full px-6 sm:px-8 py-5 sm:py-6 text-sm sm:text-base font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105"
                     >
-                      {t.cta.ctaSecondary}
+                      <a href="https://calendly.com/mikulasdejvid/30min" target="_blank" rel="noopener noreferrer">
+                        <span className="ml-2">{t.cta.ctaPrimary}</span>
+                        <Calendar className="w-4 h-4 ml-2 mr-2" />
+                      </a>
                     </Button>
                   </div>
 

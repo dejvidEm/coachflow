@@ -276,7 +276,7 @@ const translations: Record<Language, Translations> = {
       title: "Ste pripravení transformovať váš trénerský biznis?",
       subtitle:
         "Pridajte sa k tisícom fitness profesionálov, ktorí dôverujú CoachFlow pri poskytovaní výnimočných služieb klientom.",
-      ctaPrimary: "Vyskúšať zadarmo",
+      ctaPrimary: "Naplánovať hovor",
       ctaSecondary: "Naplánovať demo",
       contactButton: "Kontaktujte nás",
       backButton: "Späť",

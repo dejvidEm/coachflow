@@ -21,22 +21,7 @@ export function FeaturesSection() {
       icon: UtensilsCrossed,
       titleKey: "mealPlanning" as const,
       gradient: "from-emerald-500 to-teal-500",
-    },
-    {
-      icon: FileText,
-      titleKey: "pdfExports" as const,
-      gradient: "from-emerald-500 to-teal-500",
-    },
-    {
-      icon: Calendar,
-      titleKey: "scheduling" as const,
-      gradient: "from-emerald-500 to-teal-500",
-    },
-    {
-      icon: BarChart3,
-      titleKey: "analytics" as const,
-      gradient: "from-emerald-500 to-teal-500",
-    },
+    }
   ]
 
   return (

@@ -8,6 +8,7 @@ import { FeaturesSection } from '@/components/features-section';
 import { AISection } from '@/components/ai-section';
 import { TestimonialsSection } from '@/components/testimonials-section';
 import { CTASection } from '@/components/cta-section';
+import { NewsletterSection } from '@/components/newsletter-section';
 import { Footer } from '@/components/footer';
 import { Preloader } from '@/components/preloader';
 
@@ -27,6 +28,23 @@ export default function HomePage() {
     if (hasSeenPreloader) {
       setIsPreloaderVisible(false);
       setShouldShowContent(true);
+    }
+  }, []);
+
+  // Disable horizontal scrolling on mobile
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768; // md breakpoint
+    
+    if (isMobile) {
+      // Disable horizontal scrolling on body and html
+      document.body.style.overflowX = 'hidden';
+      document.documentElement.style.overflowX = 'hidden';
+      
+      return () => {
+        // Re-enable scrolling on unmount
+        document.body.style.overflowX = '';
+        document.documentElement.style.overflowX = '';
+      };
     }
   }, []);
 
@@ -63,6 +81,7 @@ export default function HomePage() {
         <PricingSection />
         <TestimonialsSection />
         <CTASection/>
+        <NewsletterSection />
         <Footer />
       </main>
       {isPreloaderVisible && (

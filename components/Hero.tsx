@@ -87,23 +87,28 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 px-2 sm:px-0">
-            <Button className="bg-neutral-900 text-white hover:bg-neutral-800 rounded-full py-5 sm:py-6 text-sm sm:text-base font-medium shadow-lg shadow-neutral-900/20 hover:shadow-xl hover:shadow-neutral-900/25 transition-all hover:scale-105">
-              <span className="ml-4">{t.hero.ctaPrimary}</span>
-              <ArrowRight className="w-4 h-4 ml-1 mr-2" />
+            <Button 
+              asChild
+              className="bg-neutral-900 text-white hover:bg-neutral-800 rounded-full py-5 sm:py-6 text-sm sm:text-base font-medium shadow-lg shadow-neutral-900/20 hover:shadow-xl hover:shadow-neutral-900/25 transition-all hover:scale-105"
+            >
+              <a href="#newsletter">
+                <span className="ml-4">{t.hero.ctaPrimary}</span>
+                <ArrowRight className="w-4 h-4 ml-1 mr-2" />
+              </a>
             </Button>
           </div>
 
           {/* Hero Mockup */}
           <div 
             ref={mockupRef}
-            className="relative animate-in fade-in slide-in-from-bottom-6 duration-700 delay-700 max-w-7xl mx-auto mt-24 sm:mt-28 lg:mt-32 flex justify-center items-center translate-x-4 sm:translate-x-6"
+            className="relative animate-in fade-in slide-in-from-bottom-6 duration-700 delay-700 max-w-7xl mx-auto mt-32 sm:mt-28 lg:mt-32 flex justify-center items-center translate-x-4 sm:translate-x-6"
           >
             <Image
               src="/brand/mockup_hero.png"
               alt="CoachFlow Dashboard Mockup"
               width={1200}
               height={800}
-              className="w-full h-auto relative z-10 scale-125 sm:scale-100 lg:scale-100"
+              className="w-full h-auto relative z-10 scale-150 sm:scale-100"
               priority
             />
             

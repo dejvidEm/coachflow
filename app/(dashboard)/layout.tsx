@@ -191,20 +191,20 @@ function LandingHeader() {
                   onClick={() => handleScrollTo('features')}
                   className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                 >
-                  Features
+                  Funkcie
                 </button>
                 <button
                   onClick={() => handleScrollTo('how-it-works')}
                   className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                 >
-                  How it works
+                  Ako to funguje
                 </button>
-                <Link
-                  href="/pricing"
-                  className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                <button
+                  onClick={() => handleScrollTo('pricing')}
+                  className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                 >
-                  Pricing
-                </Link>
+                  Cenník
+                </button>
               </nav>
 
               {/* UserMenu or Sign-In/Create account buttons */}
@@ -290,21 +290,23 @@ function LandingHeader() {
               onClick={() => handleScrollTo('features')}
               className="text-center text-base font-medium text-gray-700 hover:text-gray-900 transition-colors py-2"
             >
-              Features
+              Funkcie
             </button>
             <button
               onClick={() => handleScrollTo('how-it-works')}
               className="text-center text-base font-medium text-gray-700 hover:text-gray-900 transition-colors py-2"
             >
-              How it works
+              Ako to funguje
             </button>
-            <Link
-              href="/pricing"
-              onClick={handleLinkClick}
+            <button
+              onClick={() => {
+                handleScrollTo('pricing')
+                handleLinkClick()
+              }}
               className="text-center text-base font-medium text-gray-700 hover:text-gray-900 transition-colors py-2"
             >
-              Pricing
-            </Link>
+              Cenník
+            </button>
           </nav>
 
           {/* Mobile Auth Buttons */}
