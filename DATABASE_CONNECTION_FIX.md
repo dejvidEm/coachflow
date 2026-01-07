@@ -88,3 +88,7 @@ postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
 **Note:** The connection pooler is more reliable and recommended for production. It handles connection limits better and is optimized for serverless environments like Vercel.
 
 
+
+
+
+

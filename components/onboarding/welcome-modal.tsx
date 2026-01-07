@@ -14,9 +14,10 @@ import { useLanguage } from '@/lib/language-context';
 
 interface WelcomeModalProps {
   userName?: string;
+  onClose?: () => void;
 }
 
-export function WelcomeModal({ userName }: WelcomeModalProps) {
+export function WelcomeModal({ userName, onClose }: WelcomeModalProps) {
   const { t } = useLanguage();
   const { startTour, skipTour } = useOnboarding();
   const [isOpen, setIsOpen] = useState(true);
@@ -26,11 +27,13 @@ export function WelcomeModal({ userName }: WelcomeModalProps) {
   const handleStartTour = () => {
     setIsOpen(false);
     startTour();
+    onClose?.();
   };
 
   const handleSkip = () => {
     setIsOpen(false);
     skipTour();
+    onClose?.();
   };
 
   return (

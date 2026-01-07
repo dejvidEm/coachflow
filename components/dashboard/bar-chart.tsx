@@ -36,7 +36,7 @@ export function DashboardBarChart() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" style={{ color: '#44B080' }} />
-            <CardTitle>Monthly Statistics</CardTitle>
+            <CardTitle>Mesačná aktivita</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -52,7 +52,7 @@ export function DashboardBarChart() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" style={{ color: '#44B080' }} />
-            <CardTitle>Monthly Statistics</CardTitle>
+            <CardTitle>Mesačná aktivita</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -83,7 +83,7 @@ export function DashboardBarChart() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <BarChart3 className="h-5 w-5" style={{ color: '#44B080' }} />
-          <CardTitle>Monthly Statistics</CardTitle>
+          <CardTitle>Mesačná aktivita</CardTitle>
         </div>
       </CardHeader>
       <CardContent>

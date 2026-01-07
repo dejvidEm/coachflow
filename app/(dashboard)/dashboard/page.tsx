@@ -25,7 +25,7 @@ export default async function DashboardPage() {
     <DashboardWrapper>
       <section className="flex-1 p-4 lg:p-8" data-onboarding="dashboard">
       <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
-        {user.name ? `Welcome back, ${user.name}` : 'Welcome back'}
+        {user.name ? `Vitaj naspäť, ${user.name}` : 'Vitaj naspäť,'}
       </h1>
       
       <DashboardStats />

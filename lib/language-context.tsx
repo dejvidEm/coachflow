@@ -154,7 +154,7 @@ const translations: Record<Language, Translations> = {
       headline: "Moderná platforma pre",
       headlineHighlight: "osobných trénerov",
       subheadline:
-        "Spravujte klientov, vytvárajte tréningové plány, generujte jedálničky a exportujte profesionálne PDF — všetko na jednom mieste.",
+        "Trávte menej času chaosom okolo coachingu a viac tým, na čom záleží. Spravujte klientov a vytvárajte tréningové aj jedálničkové plány v jednej aplikácii.",
       ctaPrimary: "Získať skorší prístup",
       ctaSecondary: "Watch demo",
       socialProof: "Obľúbené u 2 000+ trénerov",

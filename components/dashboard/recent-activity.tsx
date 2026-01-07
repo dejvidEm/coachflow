@@ -63,7 +63,7 @@ export function RecentActivity() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Clock className="h-5 w-5" style={{ color: '#44B080' }} />
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle>Posledná aktivita</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -79,7 +79,7 @@ export function RecentActivity() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Clock className="h-5 w-5" style={{ color: '#44B080' }} />
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle>Posledná aktivita</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -106,7 +106,7 @@ export function RecentActivity() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Clock className="h-5 w-5" style={{ color: '#44B080' }} />
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle>Posledná aktivita</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -121,7 +121,7 @@ export function RecentActivity() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5" style={{ color: '#44B080' }} />
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Posledná aktivita</CardTitle>
         </div>
       </CardHeader>
       <CardContent>

@@ -121,6 +121,8 @@ export interface Client {
   fitnessGoal: 'mass_gain' | 'weight_loss' | 'maintain';
   mealPdf: string | null;
   trainingPdf: string | null;
+  mealPlanUpdatedAt: Date | null;
+  trainingPlanUpdatedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }

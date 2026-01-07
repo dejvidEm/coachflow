@@ -66,6 +66,8 @@ export function NewTrainingPlanContent({ clientId }: NewTrainingPlanContentProps
 
       // Refresh client data
       await mutate(`/api/clients/${clientId}`);
+      // Also refresh the clients list to update plan status icons
+      await mutate('/api/clients');
 
       // Navigate back to client detail page
       router.push(`/dashboard/clients/${clientId}`);
@@ -222,6 +224,7 @@ export function NewTrainingPlanContent({ clientId }: NewTrainingPlanContentProps
     </section>
   );
 }
+
 
 
 

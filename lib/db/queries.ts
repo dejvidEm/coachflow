@@ -561,6 +561,8 @@ function transformClient(row: any): Client {
     fitnessGoal: row.fitness_goal,
     mealPdf: mealPdfUrl,
     trainingPdf: trainingPdfUrl,
+    mealPlanUpdatedAt: row.meal_plan_updated_at ? new Date(row.meal_plan_updated_at) : null,
+    trainingPlanUpdatedAt: row.training_plan_updated_at ? new Date(row.training_plan_updated_at) : null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -687,11 +689,12 @@ export async function updateClientMealPdf(clientId: number, pdfUrl: string): Pro
   // Note: The savePdf function will handle deletion of the old file
   // We don't need to delete here since savePdf does it automatically
 
-  // Update only pdf_url and updated_at
+  // Update pdf_url, meal_plan_updated_at, and updated_at
   const clients = await client<any[]>`
     UPDATE clients
     SET 
       meal_pdf = ${pdfUrl},
+      meal_plan_updated_at = NOW(),
       updated_at = NOW()
     WHERE id = ${clientId} AND user_id = ${user.id}
     RETURNING *
@@ -715,11 +718,12 @@ export async function updateClientTrainingPdf(clientId: number, pdfUrl: string):
     throw new Error('Client not found or access denied');
   }
 
-  // Update only training_pdf and updated_at
+  // Update training_pdf, training_plan_updated_at, and updated_at
   const clients = await client<any[]>`
     UPDATE clients
     SET 
       training_pdf = ${pdfUrl},
+      training_plan_updated_at = NOW(),
       updated_at = NOW()
     WHERE id = ${clientId} AND user_id = ${user.id}
     RETURNING *

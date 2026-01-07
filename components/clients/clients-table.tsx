@@ -3,6 +3,8 @@
 import React from 'react';
 import { Client } from '@/lib/db/schema';
 import { useRouter } from 'next/navigation';
+import { UtensilsCrossed, Dumbbell } from 'lucide-react';
+import { getPlanStatus } from '@/lib/utils/plan-status';
 
 const fitnessGoalColors: Record<string, string> = {
   mass_gain: '#B4E5FF',
@@ -71,7 +73,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
               Height
             </th>
             <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-              Note
+              Plans
             </th>
           </tr>
         </thead>
@@ -120,9 +122,30 @@ export function ClientsTable({ clients }: ClientsTableProps) {
                     {client.actualHeight !== null ? `${client.actualHeight} cm` : 'N/A'}
                   </div>
                 </td>
-                <td className="px-4 py-4">
-                  <div className="text-sm text-gray-600 max-w-xs truncate" title={client.note || ''}>
-                    {client.note || 'N/A'}
+                <td className="px-4 py-4 whitespace-nowrap">
+                  <div className="flex items-center gap-3">
+                    {(() => {
+                      const mealStatus = getPlanStatus(client.mealPlanUpdatedAt, client.mealPdf, client.updatedAt);
+                      return (
+                        <div className="flex items-center gap-1" title={mealStatus.status === 'none' ? 'No meal plan' : `Meal plan: ${mealStatus.status}`}>
+                          <UtensilsCrossed 
+                            className="w-5 h-5" 
+                            style={{ color: mealStatus.color }}
+                          />
+                        </div>
+                      );
+                    })()}
+                    {(() => {
+                      const trainingStatus = getPlanStatus(client.trainingPlanUpdatedAt, client.trainingPdf, client.updatedAt);
+                      return (
+                        <div className="flex items-center gap-1" title={trainingStatus.status === 'none' ? 'No training plan' : `Training plan: ${trainingStatus.status}`}>
+                          <Dumbbell 
+                            className="w-5 h-5" 
+                            style={{ color: trainingStatus.color }}
+                          />
+                        </div>
+                      );
+                    })()}
                   </div>
                 </td>
               </tr>

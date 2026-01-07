@@ -3,10 +3,11 @@
 import React from 'react';
 import { Client } from '@/lib/db/schema';
 import { Card, CardContent } from '@/components/ui/card';
-import { UserCircle } from 'lucide-react';
+import { UserCircle, UtensilsCrossed, Dumbbell } from 'lucide-react';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { ClientsTable } from './clients-table';
+import { getPlanStatus } from '@/lib/utils/plan-status';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -134,15 +135,30 @@ function ClientCard({ client }: { client: Client }) {
           </div>
         )}
 
-        {client.note && (
-          <div className="mt-auto pt-2 border-t border-gray-200 flex-shrink-0">
-            <p className="text-xs text-gray-600 italic line-clamp-2">{client.note}</p>
-          </div>
-        )}
-
-        {!client.note && (
-          <div className="mt-auto"></div>
-        )}
+        <div className="mt-auto pt-2 border-t border-gray-200 flex items-center justify-center gap-4 flex-shrink-0">
+          {(() => {
+            const mealStatus = getPlanStatus(client.mealPlanUpdatedAt, client.mealPdf, client.updatedAt);
+            return (
+              <div className="flex items-center gap-1" title={mealStatus.status === 'none' ? 'No meal plan' : `Meal plan: ${mealStatus.status}`}>
+                <UtensilsCrossed 
+                  className="w-5 h-5" 
+                  style={{ color: mealStatus.color }}
+                />
+              </div>
+            );
+          })()}
+          {(() => {
+            const trainingStatus = getPlanStatus(client.trainingPlanUpdatedAt, client.trainingPdf, client.updatedAt);
+            return (
+              <div className="flex items-center gap-1" title={trainingStatus.status === 'none' ? 'No training plan' : `Training plan: ${trainingStatus.status}`}>
+                <Dumbbell 
+                  className="w-5 h-5" 
+                  style={{ color: trainingStatus.color }}
+                />
+              </div>
+            );
+          })()}
+        </div>
 
         <div className="pt-1 text-xs text-center flex-shrink-0" style={{ color: '#44B080' }}>
           Click to view details →

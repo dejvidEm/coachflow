@@ -149,16 +149,30 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
           </div>
 
           <div className="mt-6">
-            <Link
-              href={`${mode === 'signin' ? '/sign-up' : '/sign-in'}${
-                redirect ? `?redirect=${redirect}` : ''
-              }${priceId ? `&priceId=${priceId}` : ''}`}
-              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#44B080]/30"
-            >
-              {mode === 'signin'
-                ? 'Create an account'
-                : 'Sign in to existing account'}
-            </Link>
+            {mode === 'signin' ? (
+              <Button
+                asChild
+                variant="outline"
+                className="w-full rounded-full"
+              >
+                <Link
+                  href={`/sign-up${
+                    redirect ? `?redirect=${redirect}` : ''
+                  }${priceId ? `&priceId=${priceId}` : ''}`}
+                >
+                  Create new account
+                </Link>
+              </Button>
+            ) : (
+              <Link
+                href={`/sign-in${
+                  redirect ? `?redirect=${redirect}` : ''
+                }${priceId ? `&priceId=${priceId}` : ''}`}
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#44B080]/30"
+              >
+                Sign in to existing account
+              </Link>
+            )}
           </div>
         </div>
       </div>

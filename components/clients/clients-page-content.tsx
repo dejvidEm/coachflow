@@ -9,6 +9,7 @@ import { mutate } from 'swr';
 import { FilterSortBar, SortOption, FilterOption } from '@/components/shared/filter-sort-bar';
 import { Client } from '@/lib/db/schema';
 import useSWR from 'swr';
+import { getPlanStatus } from '@/lib/utils/plan-status';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -16,10 +17,19 @@ type ViewType = 'card' | 'table';
 
 export function ClientsPageContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [view, setView] = useState<ViewType>('card');
+  const [view, setView] = useState<ViewType>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name-asc');
   const [filterGoal, setFilterGoal] = useState('');
+  const [planFilters, setPlanFilters] = useState<{
+    noPlan: boolean;
+    mealPlan: boolean;
+    trainingPlan: boolean;
+  }>({
+    noPlan: false,
+    mealPlan: false,
+    trainingPlan: false,
+  });
 
   const { data } = useSWR<{ clients: Client[] }>('/api/clients', fetcher);
   const allClients = data?.clients || [];
@@ -63,6 +73,22 @@ export function ClientsPageContent() {
       filtered = filtered.filter((client) => client.fitnessGoal === filterGoal);
     }
 
+    // Filter by plan status
+    const hasActivePlanFilters = planFilters.noPlan || planFilters.mealPlan || planFilters.trainingPlan;
+    if (hasActivePlanFilters) {
+      filtered = filtered.filter((client) => {
+        const hasMealPlan = getPlanStatus(client.mealPlanUpdatedAt, client.mealPdf, client.updatedAt).status !== 'none';
+        const hasTrainingPlan = getPlanStatus(client.trainingPlanUpdatedAt, client.trainingPdf, client.updatedAt).status !== 'none';
+
+        // Check if client matches any of the selected filters
+        if (planFilters.noPlan && !hasMealPlan && !hasTrainingPlan) return true;
+        if (planFilters.mealPlan && hasMealPlan) return true;
+        if (planFilters.trainingPlan && hasTrainingPlan) return true;
+        
+        return false;
+      });
+    }
+
     // Sort
     const [sortField, sortDirection] = sortBy.split('-');
     filtered.sort((a, b) => {
@@ -96,7 +122,7 @@ export function ClientsPageContent() {
     });
 
     return filtered;
-  }, [allClients, searchQuery, sortBy, filterGoal]);
+  }, [allClients, searchQuery, sortBy, filterGoal, planFilters]);
 
   const sortOptions: SortOption[] = [
     { value: 'name-asc', label: 'Name (A-Z)' },
@@ -173,6 +199,48 @@ export function ClientsPageContent() {
         filterOptions={filterOptions}
         filterLabel="Goal"
       />
+
+      {/* Plan Status Filters */}
+      <div className="mt-4 flex flex-wrap items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <span className="text-sm font-medium text-gray-700">Plan Status:</span>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={planFilters.noPlan}
+            onChange={(e) => setPlanFilters({ ...planFilters, noPlan: e.target.checked })}
+            className="w-4 h-4 text-[#44B080] border-gray-300 rounded focus:ring-[#44B080] focus:ring-2"
+          />
+          <span className="text-sm text-gray-700">No Plan</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={planFilters.mealPlan}
+            onChange={(e) => setPlanFilters({ ...planFilters, mealPlan: e.target.checked })}
+            className="w-4 h-4 text-[#44B080] border-gray-300 rounded focus:ring-[#44B080] focus:ring-2"
+          />
+          <span className="text-sm text-gray-700">Meal Plan</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={planFilters.trainingPlan}
+            onChange={(e) => setPlanFilters({ ...planFilters, trainingPlan: e.target.checked })}
+            className="w-4 h-4 text-[#44B080] border-gray-300 rounded focus:ring-[#44B080] focus:ring-2"
+          />
+          <span className="text-sm text-gray-700">Training Plan</span>
+        </label>
+        {(planFilters.noPlan || planFilters.mealPlan || planFilters.trainingPlan) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setPlanFilters({ noPlan: false, mealPlan: false, trainingPlan: false })}
+            className="text-xs text-gray-600 hover:text-gray-900"
+          >
+            Clear
+          </Button>
+        )}
+      </div>
 
       <div className="mt-8">
       <ClientsSlider view={view} clients={filteredAndSortedClients} />

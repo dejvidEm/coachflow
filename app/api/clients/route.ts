@@ -30,12 +30,15 @@ export async function GET(request: NextRequest) {
     
     // Don't expose PDF URLs - only return flags for security
     // All PDF access should go through authenticated proxy routes
+    // But include timestamp fields for plan status calculation
     const clientsWithoutPdfs = clients.map(client => {
       const { mealPdf, trainingPdf, ...clientWithoutPdfs } = client;
       return {
         ...clientWithoutPdfs,
-        hasMealPdf: !!client.mealPdf,
-        hasTrainingPdf: !!client.trainingPdf,
+        // Return a flag string instead of actual URL for security
+        // Components can check if this is truthy to determine if PDF exists
+        mealPdf: client.mealPdf ? 'exists' : null,
+        trainingPdf: client.trainingPdf ? 'exists' : null,
       };
     });
     
