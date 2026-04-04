@@ -60,11 +60,11 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
 
   // Settings pages
   const settingsPages = [
-    { href: '/dashboard/settings/team', icon: Users, label: 'Profile' },
-    { href: '/dashboard/settings/general', icon: Settings, label: 'General' },
-    { href: '/dashboard/settings/pdf', icon: FileText, label: 'PDF Settings' },
-    { href: '/dashboard/settings/activity', icon: Activity, label: 'Activity' },
-    { href: '/dashboard/settings/security', icon: Shield, label: 'Security' }
+    { href: '/dashboard/settings/team', icon: Users, label: 'Profil' },
+    { href: '/dashboard/settings/general', icon: Settings, label: 'Všeobecné' },
+    { href: '/dashboard/settings/pdf', icon: FileText, label: 'Nastavenia PDF' },
+    { href: '/dashboard/settings/activity', icon: Activity, label: 'Aktivita' },
+    { href: '/dashboard/settings/security', icon: Shield, label: 'Zabezpečenie' }
   ];
 
   // Check if current pathname is one of the settings pages
@@ -86,11 +86,11 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
   `;
 
   const navItems = [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', show: hasPaidPlan, dataAttr: 'dashboard' },
-    { href: '/dashboard/meals', icon: UtensilsCrossed, label: 'Meals', show: hasPaidPlan, dataAttr: 'meals-section' },
-    { href: '/dashboard/exercises', icon: Dumbbell, label: 'Exercises', show: hasPaidPlan, dataAttr: 'exercises-section' },
-    { href: '/dashboard/supplements', icon: Pill, label: 'Supplements', show: hasPaidPlan },
-    { href: '/dashboard/clients', icon: Users, label: 'Clients', show: hasPaidPlan, dataAttr: 'clients-section' },
+    { href: '/dashboard', icon: LayoutDashboard, label: 'Prehľad', show: hasPaidPlan, dataAttr: 'dashboard' },
+    { href: '/dashboard/meals', icon: UtensilsCrossed, label: 'Jedlá', show: hasPaidPlan, dataAttr: 'meals-section' },
+    { href: '/dashboard/exercises', icon: Dumbbell, label: 'Cvičenia', show: hasPaidPlan, dataAttr: 'exercises-section' },
+    { href: '/dashboard/supplements', icon: Pill, label: 'Doplnky', show: hasPaidPlan },
+    { href: '/dashboard/clients', icon: Users, label: 'Klienti', show: hasPaidPlan, dataAttr: 'clients-section' },
     { href: '/dashboard/pdf', icon: FileText, label: 'PDF', show: hasPaidPlan },
   ];
 
@@ -103,7 +103,7 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
           size="sm"
           onClick={handleToggleCollapse}
           className="h-8 w-8 p-0"
-          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={isCollapsed ? 'Rozbaliť bočný panel' : 'Zbaliť bočný panel'}
         >
           {isCollapsed ? (
             <ChevronRight className="h-4 w-4" />
@@ -156,7 +156,7 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
               >
                 <div className="flex items-center">
                   <Settings className="h-4 w-4 mr-2" />
-                  Settings
+                  Nastavenia
                 </div>
                 <ChevronDown className="h-4 w-4" />
               </Button>
@@ -188,7 +188,7 @@ export function Sidebar({ isMobileOpen, onMobileToggle }: SidebarProps) {
                 className={`shadow-none my-1 w-full justify-center px-0 ${
                   isSettingsPageActive ? 'bg-gray-100' : ''
                 }`}
-                title="Settings"
+                title="Nastavenia"
               >
                 <Settings className="h-4 w-4" />
               </Button>
