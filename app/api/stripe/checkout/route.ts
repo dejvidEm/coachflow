@@ -9,6 +9,7 @@ import Stripe from 'stripe';
 function transformUser(row: any): User {
   return {
     id: row.id,
+    authUserId: row.auth_user_id != null ? String(row.auth_user_id) : null,
     name: row.name,
     email: row.email,
     passwordHash: row.password_hash,

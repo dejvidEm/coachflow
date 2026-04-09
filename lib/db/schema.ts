@@ -2,6 +2,8 @@
 
 export interface User {
   id: number;
+  /** Supabase auth.users id when linked; used by RLS (auth.uid()). */
+  authUserId: string | null;
   name: string | null;
   email: string;
   passwordHash: string;
@@ -61,7 +63,7 @@ export interface Invitation {
   status: string;
 }
 
-export type NewUser = Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
+export type NewUser = Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'authUserId'>;
 export type NewTeam = Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'stripeCustomerId' | 'stripeSubscriptionId' | 'stripeProductId' | 'planName' | 'subscriptionStatus'>;
 export type NewTeamMember = Omit<TeamMember, 'id' | 'joinedAt'>;
 export type NewActivityLog = Omit<ActivityLog, 'id' | 'timestamp'>;
