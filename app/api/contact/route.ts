@@ -50,15 +50,7 @@ export async function POST(request: NextRequest) {
       return addRateLimitHeaders(addSecurityHeaders(response), request, RATE_LIMIT);
     }
 
-    const to = process.env.CONTACT_EMAIL;
-    if (!to) {
-      console.error('CONTACT_EMAIL environment variable is not set.');
-      response = NextResponse.json(
-        { error: 'Contact endpoint is not configured.' },
-        { status: 500 }
-      );
-      return addRateLimitHeaders(addSecurityHeaders(response), request, RATE_LIMIT);
-    }
+    const to = process.env.CONTACT_EMAIL || 'coachflowsoft@gmail.com';
 
     await sendEmail({
       to,

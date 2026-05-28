@@ -13,12 +13,12 @@ export function Preloader({ onComplete, onSliding }: PreloaderProps) {
   const [isSliding, setIsSliding] = useState(false);
 
   const texts = ['Ready?', 'Preparing..', 'Coach!'];
-  const duration = 1500; // Duration for each word
+  const duration = 1250; // Duration for each word
 
   useEffect(() => {
     // Calculate when "Coach" appears (index 2)
-    // "Ready?" at 0s, "Preparing.." at 1.5s, "Coach" at 3s
-    const coachAppearsAt = duration * 2; // 3000ms (3 seconds)
+    // "Ready?" at 0s, "Preparing.." at 1.25s, "Coach" at 2.5s
+    const coachAppearsAt = duration * 2; // 2500ms (2.5 seconds)
     
     // Wait a bit after "Coach" appears to show it in black/white first
     const showCoachInBlackWhite = 800; // Show "Coach" in black/white for 0.8s
