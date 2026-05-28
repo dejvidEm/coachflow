@@ -12,6 +12,7 @@ interface SendEmailOptions {
   to: string;
   subject: string;
   html: string;
+  replyTo?: string;
   pdfAttachment?: {
     filename: string;
     content: Buffer;
@@ -26,7 +27,7 @@ interface SendEmailOptions {
  * @throws Error if email sending fails
  */
 export async function sendEmail(options: SendEmailOptions): Promise<{ success: boolean; messageId?: string }> {
-  const { to, subject, html, pdfAttachment } = options;
+  const { to, subject, html, replyTo, pdfAttachment } = options;
 
   // Check if Resend API key is configured
   const resendApiKey = process.env.RESEND_API_KEY;
@@ -44,6 +45,11 @@ export async function sendEmail(options: SendEmailOptions): Promise<{ success: b
     subject,
     html,
   };
+
+  // Set reply-to so recipients can reply directly to the sender
+  if (replyTo) {
+    emailOptions.replyTo = replyTo;
+  }
 
   // Add PDF attachment if provided
   if (pdfAttachment) {

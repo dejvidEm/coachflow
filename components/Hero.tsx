@@ -1,10 +1,9 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Play, Sparkles } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import Image from "next/image"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react"
 
 export function HeroSection() {
   const { t } = useLanguage()
@@ -12,6 +11,38 @@ export function HeroSection() {
   const [bubble1Visible, setBubble1Visible] = useState(false)
   const [bubble2Visible, setBubble2Visible] = useState(false)
   const [hasTriggered, setHasTriggered] = useState(false)
+  const [email, setEmail] = useState("")
+  const [website, setWebsite] = useState("")
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false)
+  const [waitlistLoading, setWaitlistLoading] = useState(false)
+  const [waitlistError, setWaitlistError] = useState("")
+
+  const handleWaitlistSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    if (!email || waitlistLoading) return
+
+    setWaitlistLoading(true)
+    setWaitlistError("")
+
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, company: website }),
+      })
+
+      if (!res.ok) {
+        throw new Error("Request failed")
+      }
+
+      setWaitlistSubmitted(true)
+      setEmail("")
+    } catch {
+      setWaitlistError(t.hero.waitlistError)
+    } finally {
+      setWaitlistLoading(false)
+    }
+  }
 
   useEffect(() => {
     let initialScrollY = window.scrollY
@@ -85,17 +116,53 @@ export function HeroSection() {
             {t.hero.subheadline}
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 px-2 sm:px-0">
-            <Button 
-              asChild
-              className="bg-neutral-900 text-white hover:bg-neutral-800 rounded-full py-5 sm:py-6 text-sm sm:text-base font-medium shadow-lg shadow-neutral-900/20 hover:shadow-xl hover:shadow-neutral-900/25 transition-all hover:scale-105"
-            >
-              <a href="#newsletter">
-                <span className="ml-4">{t.hero.ctaPrimary}</span>
-                <ArrowRight className="w-4 h-4 ml-1 mr-2" />
-              </a>
-            </Button>
+          {/* Waitlist input */}
+          <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300 px-2 sm:px-0">
+            {waitlistSubmitted ? (
+              <div className="mx-auto max-w-xl flex items-center justify-center gap-2 rounded-full bg-emerald-500/15 text-emerald-700 px-6 py-4 text-sm sm:text-base font-medium">
+                {t.hero.waitlistSuccess}
+              </div>
+            ) : (
+              <>
+                <div className="mx-auto max-w-xl rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 p-[2px] shadow-lg shadow-emerald-500/20">
+                  <form
+                    onSubmit={handleWaitlistSubmit}
+                    className="flex items-center gap-2 rounded-full bg-white p-2"
+                  >
+                    {/* Honeypot field for spam bots - hidden from real users */}
+                    <input
+                      type="text"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                      className="hidden"
+                      aria-hidden="true"
+                    />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder={t.hero.waitlistPlaceholder}
+                      className="flex-1 min-w-0 bg-transparent border-0 outline-none px-4 sm:px-6 py-2 text-sm sm:text-base text-neutral-900 placeholder:text-neutral-400 focus:ring-0"
+                    />
+                    <button
+                      type="submit"
+                      disabled={waitlistLoading}
+                      className="group flex-shrink-0 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-5 sm:px-7 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wide shadow-sm cursor-pointer hover:from-emerald-600 hover:to-teal-600 transition-all hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    >
+                      <span>{waitlistLoading ? t.hero.waitlistSending : t.hero.waitlistButton}</span>
+                      {!waitlistLoading && <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />}
+                    </button>
+                  </form>
+                </div>
+                {waitlistError && (
+                  <p className="mt-3 text-sm text-red-500">{waitlistError}</p>
+                )}
+              </>
+            )}
           </div>
 
           {/* Hero Mockup */}

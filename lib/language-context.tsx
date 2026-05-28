@@ -21,6 +21,11 @@ interface Translations {
     ctaPrimary: string
     ctaSecondary: string
     socialProof: string
+    waitlistPlaceholder: string
+    waitlistButton: string
+    waitlistSending: string
+    waitlistSuccess: string
+    waitlistError: string
   }
   logoCloud: {
     title: string
@@ -85,12 +90,15 @@ interface Translations {
     namePlaceholder: string
     email: string
     emailPlaceholder: string
+    phone: string
+    phonePlaceholder: string
     message: string
     messagePlaceholder: string
     send: string
     sending: string
     success: string
     successMessage: string
+    error: string
   }
   footer: {
     tagline: string
@@ -157,7 +165,12 @@ const translations: Record<Language, Translations> = {
         "Trávte menej času chaosom okolo coachingu a viac tým, na čom záleží. Spravujte klientov a vytvárajte tréningové aj jedálničkové plány v jednej aplikácii.",
       ctaPrimary: "Získať skorší prístup",
       ctaSecondary: "Watch demo",
-      socialProof: "Obľúbené u 2 000+ trénerov",
+      socialProof: "Obľúbené u trénerov po celom Slovensku",
+      waitlistPlaceholder: "Vaša e-mailová adresa",
+      waitlistButton: "Skorší prístup",
+      waitlistSending: "Odosielam...",
+      waitlistSuccess: "Ďakujeme! Ozveme sa vám.",
+      waitlistError: "Niečo sa pokazilo. Skúste to znova.",
     },
     logoCloud: {
       title: "Dôverujú nám tréneri z popredných fitness značiek",
@@ -284,20 +297,23 @@ const translations: Record<Language, Translations> = {
     contact: {
       title: "Napíšte nám",
       subtitle: "Máte otázky? Radi vám pomôžeme.",
-      name: "Meno",
-      namePlaceholder: "Vaše meno",
+      name: "Meno alebo firma",
+      namePlaceholder: "Vaše meno alebo firma",
       email: "E-mail",
       emailPlaceholder: "vas@email.sk",
-      message: "Správa",
+      phone: "Telefónne číslo",
+      phonePlaceholder: "+421 900 000 000",
+      message: "Otázka alebo text",
       messagePlaceholder: "Ako vám môžeme pomôcť?",
       send: "Odoslať správu",
       sending: "Odosiela sa...",
       success: "Správa odoslaná!",
       successMessage: "Ďakujeme za vašu správu. Ozveme sa vám čo najskôr.",
+      error: "Správu sa nepodarilo odoslať. Skúste to znova.",
     },
     footer: {
       tagline: "Moderná platforma pre osobných trénerov.",
-      copyright: "© 2025 CoachFlow. Všetky práva vyhradené.",
+      copyright: "© 2026 CoachFlow. Všetky práva vyhradené.",
       categories: {
         product: {
           title: "Produkt",
@@ -397,7 +413,12 @@ const translations: Record<Language, Translations> = {
         "Manage clients, create custom workout plans, generate meal plans, and export beautiful PDFs — all in one seamless workflow.",
       ctaPrimary: "Start your free trial",
       ctaSecondary: "Watch demo",
-      socialProof: "Loved by 2,000+ trainers",
+      socialProof: "Loved by trainers across Slovakia",
+      waitlistPlaceholder: "Your email address",
+      waitlistButton: "Join waitlist",
+      waitlistSending: "Sending...",
+      waitlistSuccess: "Thanks! We'll be in touch.",
+      waitlistError: "Something went wrong. Please try again.",
     },
     logoCloud: {
       title: "Trusted by trainers at leading fitness brands",
@@ -523,20 +544,23 @@ const translations: Record<Language, Translations> = {
     contact: {
       title: "Get in touch",
       subtitle: "Have questions? We'd love to hear from you.",
-      name: "Name",
-      namePlaceholder: "Your name",
+      name: "Name or company",
+      namePlaceholder: "Your name or company",
       email: "Email",
       emailPlaceholder: "you@example.com",
-      message: "Message",
+      phone: "Phone number",
+      phonePlaceholder: "+421 900 000 000",
+      message: "Question or message",
       messagePlaceholder: "How can we help you?",
       send: "Send message",
       sending: "Sending...",
       success: "Message sent!",
       successMessage: "Thanks for reaching out. We'll get back to you soon.",
+      error: "Failed to send message. Please try again.",
     },
     footer: {
       tagline: "The modern platform for personal trainers.",
-      copyright: "© 2025 CoachFlow. All rights reserved.",
+      copyright: "© 2026 CoachFlow. All rights reserved.",
       categories: {
         product: {
           title: "Product",

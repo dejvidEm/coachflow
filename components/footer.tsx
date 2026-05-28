@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Instagram } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
@@ -21,9 +22,13 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">CF</span>
-              </div>
+              <Image
+                src="/brand/logo.svg"
+                alt="CoachFlow"
+                width={32}
+                height={32}
+                className="w-8 h-8 flex-shrink-0"
+              />
               <span className="font-semibold text-lg">CoachFlow</span>
             </Link>
             <p className="text-neutral-400 text-sm leading-relaxed">{t.footer.tagline}</p>

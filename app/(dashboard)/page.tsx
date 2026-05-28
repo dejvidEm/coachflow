@@ -78,8 +78,10 @@ export default function HomePage() {
         <FeaturesSection />
         <AISection />
         <HowItWorksSection />
-        <PricingSection />
-        <TestimonialsSection />
+        {/* Pricing dočasne skryté na landing page (kód ponechaný) */}
+        {/* <PricingSection /> */}
+        {/* Recenzie dočasne skryté na landing page (kód ponechaný) */}
+        {/* <TestimonialsSection /> */}
         <CTASection/>
         <NewsletterSection />
         <Footer />
